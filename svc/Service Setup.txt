@@ -1,0 +1,31 @@
+
+# Copy to Pi Home
+scp -r  C:\_dev\_github\Pi-Solution\svc\HelloWorld.service  pi@192.168.1.109: /home/pi/HelloWorld.service
+
+# Install Service
+sudo cp HelloWorld.service /etc/systemd/system/HelloWorld.service
+
+systemctl daemon-reload
+
+sudo systemctl enable HelloWorld.service
+
+sudo systemctl start HelloWorld.service
+
+sudo systemctl status HelloWorld.service
+
+# UnInstall Service
+
+systemctl stop HelloWorld.service
+systemctl disable HelloWorld.service
+sudo rm /etc/systemd/system/HelloWorld.service
+sudo rm /etc/systemd/system/HelloWorld.service # and symlinks that might be related
+sudo rm /usr/lib/systemd/system/HelloWorld.service 
+sudo rm /usr/lib/systemd/system/HelloWorld.service # and symlinks that might be related
+systemctl daemon-reload
+systemctl reset-failed
+
+
+#Copy binary
+scp -r  C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\*  pi@192.168.1.109:/home/pi/pi_solution_app/
+
+rm -rfv /home/pi/pi_solution_app/*

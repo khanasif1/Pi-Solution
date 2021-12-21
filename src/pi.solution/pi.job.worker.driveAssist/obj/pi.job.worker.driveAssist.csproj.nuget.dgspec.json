@@ -1,0 +1,96 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\_dev\\_github\\Pi-Solution\\src\\pi.solution\\pi.job.worker.driveAssist\\pi.job.worker.driveAssist.csproj": {}
+  },
+  "projects": {
+    "C:\\_dev\\_github\\Pi-Solution\\src\\pi.solution\\pi.job.worker.driveAssist\\pi.job.worker.driveAssist.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\_dev\\_github\\Pi-Solution\\src\\pi.solution\\pi.job.worker.driveAssist\\pi.job.worker.driveAssist.csproj",
+        "projectName": "pi.job.worker.driveAssist",
+        "projectPath": "C:\\_dev\\_github\\Pi-Solution\\src\\pi.solution\\pi.job.worker.driveAssist\\pi.job.worker.driveAssist.csproj",
+        "packagesPath": "C:\\Users\\askha\\.nuget\\packages\\",
+        "outputPath": "C:\\_dev\\_github\\Pi-Solution\\src\\pi.solution\\pi.job.worker.driveAssist\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\askha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Iot.Device.Bindings": {
+              "target": "Package",
+              "version": "[1.5.0, )"
+            },
+            "Microsoft.ApplicationInsights": {
+              "target": "Package",
+              "version": "[2.20.0, )"
+            },
+            "Microsoft.ApplicationInsights.DependencyCollector": {
+              "target": "Package",
+              "version": "[2.20.0, )"
+            },
+            "Microsoft.Data.Sqlite": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "Microsoft.Data.Sqlite.Core": {
+              "target": "Package",
+              "version": "[6.0.1, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.Extensions.Hosting.Systemd": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "System.Device.Gpio": {
+              "target": "Package",
+              "version": "[1.5.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

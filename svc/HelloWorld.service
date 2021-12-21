@@ -1,0 +1,16 @@
+[Unit]
+Description=Hello world
+After=network.target
+
+[Service]
+Type=forking
+WorkingDirectory=/home/pi/pi_solution_app
+ExecStart=/home/pi/.dotnet/dotnet /home/pi/pi_solution_app/pi.job.helloworld.dll
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+RemainAfterExit=yes
+User=pi
+
+[Install]
+WantedBy=multi-user.target
