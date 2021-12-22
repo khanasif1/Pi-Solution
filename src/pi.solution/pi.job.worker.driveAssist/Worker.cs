@@ -1,5 +1,6 @@
 using Iot.Device.CpuTemperature;
 using Iot.Device.Hcsr04;
+using pi.job.worker.driveAssist.DomainModel;
 using pi.job.worker.driveAssist.SQLite;
 using UnitsNet;
 
@@ -16,8 +17,8 @@ namespace pi.job.worker.driveAssist
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            SQLiteConnect sql=new SQLiteConnect();
-            sql.CreateConnection();
+            var _sqlInstance = SQLiteManage.Instance;
+            _sqlInstance.InsertRecords(new TrackingModel());
             //while (!stoppingToken.IsCancellationRequested)
             //{
             //    //_logger.LogInformation("Information - Worker running at: {time}", DateTimeOffset.Now);
