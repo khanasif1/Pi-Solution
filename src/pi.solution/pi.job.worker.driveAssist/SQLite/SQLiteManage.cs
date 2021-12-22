@@ -13,7 +13,7 @@ namespace pi.job.worker.driveAssist.SQLite
         private static SQLiteManage? instance = null;
         private static readonly object padlock = new object();
         private static SqliteConnection? connection = null;
-        SQLiteManage(){}
+        SQLiteManage() { }
 
         public static SQLiteManage Instance
         {
@@ -24,7 +24,7 @@ namespace pi.job.worker.driveAssist.SQLite
                     if (instance == null)
                     {
                         InitDB();
-                        instance = new SQLiteManage();                     
+                        instance = new SQLiteManage();
                     }
                     return instance;
                 }
@@ -32,23 +32,24 @@ namespace pi.job.worker.driveAssist.SQLite
         }
         private static SqliteConnection OpenConnection()
         {
-            using (var connection = new SqliteConnection("Data Source=driveAssist.db"))
-            {
-                connection.Open();
-                return connection;
-            }
+            connection = new SqliteConnection("Data Source=driveAssist.db");
+            connection.Open();
+            return connection;
+
         }
         private static bool CloseConnection()
         {
-            connection.Close();
+            if (connection != null && connection.State == System.Data.ConnectionState.Open)
+                connection.Close();
             return true;
-        }     
+        }
         private static bool InitDB()
         {
             try
             {
                 SQLiteTransect _sqlTransection = new SQLiteTransect();
-                _sqlTransection.InitDB(OpenConnection());
+                SqliteConnection connection = OpenConnection();
+                _sqlTransection.InitDB(connection);
                 CloseConnection();
             }
             catch (Exception)
@@ -58,17 +59,19 @@ namespace pi.job.worker.driveAssist.SQLite
             }
             return true;
         }
-        public bool InsertRecords(TrackingModel _model)
+        public async Task<bool> InsertRecords(TrackingModel _model, ILogger<Worker> logger)
         {
             try
             {
                 SQLiteTransect _sqlTransection = new SQLiteTransect();
-                _sqlTransection.InsertDB(OpenConnection(),_model);
+                await _sqlTransection.InsertDB(OpenConnection(), _model, logger);
                 CloseConnection();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                logger.LogError("Error while getting temperature");
 
+                logger.LogError(ex.Message);
                 throw;
             }
             return true;

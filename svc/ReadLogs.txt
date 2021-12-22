@@ -1,0 +1,9 @@
+sudo journalctl -u Worker -f -p 4
+
+
+LogLevel	        Syslog level	    systemd name
+Trace/Debug	            7	            debug
+Information	            6	            info
+Warning	                4	            warning
+Error	                3	            err
+Critical	            2	            crit

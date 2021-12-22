@@ -17,15 +17,14 @@ namespace pi.job.worker.driveAssist
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var _sqlInstance = SQLiteManage.Instance;
-            _sqlInstance.InsertRecords(new TrackingModel());
+            
             //while (!stoppingToken.IsCancellationRequested)
             //{
-            //    //_logger.LogInformation("Information - Worker running at: {time}", DateTimeOffset.Now);
-            //    //_logger.LogWarning("Warning - Worker running at: {time}", DateTimeOffset.Now);
-            //    //_logger.LogError("Error - Worker running at: {time}", DateTimeOffset.Now);
-            //    //_logger.LogCritical("Critical - Worker running at: {time}", DateTimeOffset.Now);
-            //    //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            //_logger.LogInformation("Information - Worker running at: {time}", DateTimeOffset.Now);
+            //_logger.LogWarning("Warning - Worker running at: {time}", DateTimeOffset.Now);
+            //_logger.LogError("Error - Worker running at: {time}", DateTimeOffset.Now);
+            //_logger.LogCritical("Critical - Worker running at: {time}", DateTimeOffset.Now);
+            //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
             //    //double _CPUTemp = GetCPUTemp();
             //    //PostTelemetry(_CPUTemp);
@@ -43,10 +42,10 @@ namespace pi.job.worker.driveAssist
             //    }
 
 
-                await Task.Delay(1000, stoppingToken);
+            await Task.Delay(1000, stoppingToken);
             //}
         }
-        private static double GetCPUTemp()
+        private double GetCPUTemp()
         {
             double _temp = 0;
             try
@@ -61,30 +60,33 @@ namespace pi.job.worker.driveAssist
                     {
                         if (!double.IsNaN(entry.Temperature.DegreesCelsius))
                         {
-                            Console.WriteLine($"Temperature from {entry.Sensor.ToString()}: {entry.Temperature.DegreesCelsius} °C");
+                           _logger.LogInformation
+                                ($"Temperature from {entry.Sensor.ToString()}: {entry.Temperature.DegreesCelsius} °C");
                             _temp = entry.Temperature.DegreesCelsius;
                         }
                         else
-                        {
-                            Console.WriteLine("Unable to read Temperature.");
+                        {                           
+                            _logger.LogInformation
+                            ("Unable to read Temperature.");
                         }
                     }
                 }
                 else
-                {
-                    Console.WriteLine($"CPU temperature is not available");
+                {                    
+                    _logger.LogInformation
+                    ($"CPU temperature is not available");
                 }
             }
             catch (Exception ex)
-            {
-
-                Console.WriteLine("Error while getting temperature");
-                Console.WriteLine(ex.Message);
+            {               
+                _logger.LogError("Error while getting temperature");
+                
+                _logger.LogError(ex.Message);
                 throw;
             }
             return _temp;
         }
-        private  DateTime _correlationTimeId;
+        private DateTime _correlationTimeId;
         private void PostTelemetry(double _CPUTemp)
         {
             try
@@ -104,16 +106,44 @@ namespace pi.job.worker.driveAssist
 
                     });
                 _insightHelper.AppInsightInit();
-
-                Console.WriteLine("Telemetry send");
+                                
+                _logger.LogInformation
+                ("Telemetry send");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error sending telemetry");
-                Console.WriteLine(ex.Message);
+               _logger.LogError("Error sending telemetry");
+                
+                _logger.LogError
+                (ex.Message);
                 throw;
             }
-            Console.WriteLine("End post telemetry");
+            
+            _logger.LogInformation
+            ("End post telemetry");
+        }
+
+        private async Task<bool> PersistData(TrackingModel _model)
+        {
+            //await PersistData(new TrackingModel
+            //{
+            //    Id = Guid.NewGuid().ToString(),
+            //    Sensor = "Distant Sensor",
+            //    Stamp = DateTime.Now.ToString(),
+            //    Value = i * 22.56,
+            //    Unit = "cms"
+            //}
+            try
+            {
+                var _sqlInstance = SQLiteManage.Instance;
+                await _sqlInstance.InsertRecords(_model, _logger);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return true;
         }
     }
 }
