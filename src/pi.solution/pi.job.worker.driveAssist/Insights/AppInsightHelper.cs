@@ -18,14 +18,15 @@ namespace pi.job.worker.driveAssist
             this._payload= payload;
         }
     
-        public void AppInsightInit()
+        public async Task<bool> AppInsightInit()
         {           
             TelemetryConfiguration configuration = TelemetryConfiguration.CreateDefault();
 
             configuration.InstrumentationKey = "d48146d0-e4f8-4d31-8be1-4bce7e1be59a";
             configuration.TelemetryInitializers.Add(new HttpDependenciesParsingTelemetryInitializer());
 
-            var telemetryClient = new TelemetryClient(configuration);
+            var telemetryClient = new TelemetryClient(configuration);        
+            
 
             if (_payload._type.CompareTo(AppInsightLanguage.AppInsightEvent) == 0)
             {
@@ -51,7 +52,7 @@ namespace pi.job.worker.driveAssist
             }
 
             telemetryClient.Flush();
-
+            return true;
         }
     }
     public enum AppInsightLanguage

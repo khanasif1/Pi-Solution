@@ -1,5 +1,6 @@
 using Iot.Device.CpuTemperature;
 using Iot.Device.Hcsr04;
+using pi.job.worker.driveAssist.BackgroundSync;
 using pi.job.worker.driveAssist.DomainModel;
 using pi.job.worker.driveAssist.SQLite;
 using UnitsNet;
@@ -9,7 +10,7 @@ namespace pi.job.worker.driveAssist
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-
+        private int BackgrounsSyncCounter = 0;
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
@@ -17,23 +18,33 @@ namespace pi.job.worker.driveAssist
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            Console.WriteLine($"Start Main method");
             while (!stoppingToken.IsCancellationRequested)
             {
                 //_logger.LogInformation("Information - Worker running at: {time}", DateTimeOffset.Now);
                 //_logger.LogWarning("Warning - Worker running at: {time}", DateTimeOffset.Now);
                 //_logger.LogError("Error - Worker running at: {time}", DateTimeOffset.Now);
                 //_logger.LogCritical("Critical - Worker running at: {time}", DateTimeOffset.Now);
-                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);     
 
-                //    //double _CPUTemp = GetCPUTemp();
-                //    //PostTelemetry(_CPUTemp);
-
-                double _distance = GetDistance();
-                if (_distance != double.MinValue)
+                //double _distance = GetDistance();
+                //if (_distance != double.MinValue)
+                //{
+                //   await PersistData(_distance);
+                //}
+                BackgrounsSyncCounter++;
+                Console.WriteLine($"In loop. Current count {BackgrounsSyncCounter}");
+                if (BackgrounsSyncCounter == 10)
                 {
-                    PersistData(_distance);
+                    CheckInternetStatus _internetStatus = new CheckInternetStatus();
+                    if (_internetStatus.IsInternetConnected())
+                    {
+                        AppInsightSync _appBackSync = new AppInsightSync();
+                        await _appBackSync.StartBackgroundSync(_logger);                        
+                    }
+                    BackgrounsSyncCounter = 0;
                 }
-
+                
                 await Task.Delay(1000, stoppingToken);
             }
         }
@@ -99,62 +110,31 @@ namespace pi.job.worker.driveAssist
             return _temp;
         }
         private DateTime _correlationTimeId;
-        private void PostTelemetry(double _CPUTemp)
-        {
-            try
-            {
-                Console.WriteLine("Starting post telemetry");
-                _correlationTimeId = DateTime.UtcNow;
-                string _correlationId = Guid.NewGuid().ToString();
-                string _traceMessage = $"Message from Pi temperature is {_CPUTemp.ToString()}";
-                AppInsightHelper _insightHelper = new AppInsightHelper(
-                    new AppInsightPayload
-                    {
-                        _operation = "Pi Telemetry",
-                        _type = AppInsightLanguage.AppInsightTrace,
-                        _payload = _traceMessage,
-                        _correlationId = _correlationId,
-                        _correlationTimeId = _correlationTimeId
 
-                    });
-                _insightHelper.AppInsightInit();
-
-                _logger.LogInformation
-                ("Telemetry send");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error sending telemetry");
-
-                _logger.LogError
-                (ex.Message);
-                throw;
-            }
-
-            _logger.LogInformation
-            ("End post telemetry");
-        }
 
         private async Task<bool> PersistData(double? _distance)
-        {        
+        {
+            _logger.LogInformation("Start - Record saved locally");
             try
             {
                 TrackingModel _model = new TrackingModel
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Sensor="DistanceSensor",
-                    Stamp=DateTime.UtcNow.ToString(),
-                    Unit="cms",
-                    Value=_distance.HasValue ? _distance.Value : 0
+                    Sensor = "DistanceSensor",
+                    Stamp = DateTime.UtcNow.ToString(),
+                    Unit = "cms",
+                    Value = _distance.HasValue ? _distance.Value : 0
                 };
                 var _sqlInstance = SQLiteManage.Instance;
                 await _sqlInstance.InsertRecords(_model, _logger);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                _logger.LogError("Error sending telemetry");
+                _logger.LogError(ex.Message);
                 throw;
             }
+            _logger.LogInformation(" End - Record saved locally");
             return true;
         }
     }
