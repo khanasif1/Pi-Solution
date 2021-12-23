@@ -17,34 +17,46 @@ namespace pi.job.worker.driveAssist
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            
-            //while (!stoppingToken.IsCancellationRequested)
-            //{
-            //_logger.LogInformation("Information - Worker running at: {time}", DateTimeOffset.Now);
-            //_logger.LogWarning("Warning - Worker running at: {time}", DateTimeOffset.Now);
-            //_logger.LogError("Error - Worker running at: {time}", DateTimeOffset.Now);
-            //_logger.LogCritical("Critical - Worker running at: {time}", DateTimeOffset.Now);
-            //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                //_logger.LogInformation("Information - Worker running at: {time}", DateTimeOffset.Now);
+                //_logger.LogWarning("Warning - Worker running at: {time}", DateTimeOffset.Now);
+                //_logger.LogError("Error - Worker running at: {time}", DateTimeOffset.Now);
+                //_logger.LogCritical("Critical - Worker running at: {time}", DateTimeOffset.Now);
+                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-            //    //double _CPUTemp = GetCPUTemp();
-            //    //PostTelemetry(_CPUTemp);
+                //    //double _CPUTemp = GetCPUTemp();
+                //    //PostTelemetry(_CPUTemp);
 
-            //    using (var sonar = new Hcsr04(4, 17))
-            //    {
-            //        if (sonar.TryGetDistance(out Length distance))
-            //        {
-            //            Console.WriteLine($"Distance: {Math.Round(distance.Centimeters, 2)} cm");
-            //        }
-            //        else
-            //        {
-            //            Console.WriteLine("Error reading sensor");
-            //        }
-            //    }
+                double _distance = GetDistance();
+                if (_distance != double.MinValue)
+                {
+                    PersistData(_distance);
+                }
 
-
-            await Task.Delay(1000, stoppingToken);
-            //}
+                await Task.Delay(1000, stoppingToken);
+            }
         }
+
+        private double GetDistance()
+        {
+            double _distance = double.MinValue;
+            using (var sonar = new Hcsr04(4, 17))
+            {
+                if (sonar.TryGetDistance(out Length distance))
+                {
+                    Console.WriteLine($"Distance: {Math.Round(distance.Centimeters, 2)} cm");
+                    _distance = Math.Round(distance.Centimeters, 2);
+
+                }
+                else
+                {
+                    Console.WriteLine("Error reading sensor");
+                }
+            }
+            return _distance;
+        }
+
         private double GetCPUTemp()
         {
             double _temp = 0;
@@ -60,27 +72,27 @@ namespace pi.job.worker.driveAssist
                     {
                         if (!double.IsNaN(entry.Temperature.DegreesCelsius))
                         {
-                           _logger.LogInformation
-                                ($"Temperature from {entry.Sensor.ToString()}: {entry.Temperature.DegreesCelsius} °C");
+                            _logger.LogInformation
+                                 ($"Temperature from {entry.Sensor.ToString()}: {entry.Temperature.DegreesCelsius} °C");
                             _temp = entry.Temperature.DegreesCelsius;
                         }
                         else
-                        {                           
+                        {
                             _logger.LogInformation
                             ("Unable to read Temperature.");
                         }
                     }
                 }
                 else
-                {                    
+                {
                     _logger.LogInformation
                     ($"CPU temperature is not available");
                 }
             }
             catch (Exception ex)
-            {               
+            {
                 _logger.LogError("Error while getting temperature");
-                
+
                 _logger.LogError(ex.Message);
                 throw;
             }
@@ -106,35 +118,35 @@ namespace pi.job.worker.driveAssist
 
                     });
                 _insightHelper.AppInsightInit();
-                                
+
                 _logger.LogInformation
                 ("Telemetry send");
             }
             catch (Exception ex)
             {
-               _logger.LogError("Error sending telemetry");
-                
+                _logger.LogError("Error sending telemetry");
+
                 _logger.LogError
                 (ex.Message);
                 throw;
             }
-            
+
             _logger.LogInformation
             ("End post telemetry");
         }
 
-        private async Task<bool> PersistData(TrackingModel _model)
-        {
-            //await PersistData(new TrackingModel
-            //{
-            //    Id = Guid.NewGuid().ToString(),
-            //    Sensor = "Distant Sensor",
-            //    Stamp = DateTime.Now.ToString(),
-            //    Value = i * 22.56,
-            //    Unit = "cms"
-            //}
+        private async Task<bool> PersistData(double? _distance)
+        {        
             try
             {
+                TrackingModel _model = new TrackingModel
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Sensor="DistanceSensor",
+                    Stamp=DateTime.UtcNow.ToString(),
+                    Unit="cms",
+                    Value=_distance.HasValue ? _distance.Value : 0
+                };
                 var _sqlInstance = SQLiteManage.Instance;
                 await _sqlInstance.InsertRecords(_model, _logger);
             }
