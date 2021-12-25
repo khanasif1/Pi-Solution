@@ -1,6 +1,7 @@
 using Iot.Device.CpuTemperature;
 using Iot.Device.Hcsr04;
 using pi.job.worker.driveAssist.BackgroundSync;
+using pi.job.worker.driveAssist.Common;
 using pi.job.worker.driveAssist.DomainModel;
 using pi.job.worker.driveAssist.SQLite;
 using UnitsNet;
@@ -27,25 +28,31 @@ namespace pi.job.worker.driveAssist
                 //_logger.LogCritical("Critical - Worker running at: {time}", DateTimeOffset.Now);
                 //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);     
 
-                //double _distance = GetDistance();
-                //if (_distance != double.MinValue)
-                //{
-                //   await PersistData(_distance);
-                //}
-                BackgrounsSyncCounter++;
-                Console.WriteLine($"In loop. Current count {BackgrounsSyncCounter}");
-                if (BackgrounsSyncCounter == 10)
+                double _distance = GetDistance();
+                if (_distance != double.MinValue)
                 {
-                    CheckInternetStatus _internetStatus = new CheckInternetStatus();
-                    if (_internetStatus.IsInternetConnected())
-                    {
-                        AppInsightSync _appBackSync = new AppInsightSync();
-                        await _appBackSync.StartBackgroundSync(_logger);                        
-                    }
-                    BackgrounsSyncCounter = 0;
+                    await PersistData(_distance);
                 }
-                
+                if (ConfigManager.EnableBackgroundSync)
+                    await ManageBackgroundSync();
+
                 await Task.Delay(1000, stoppingToken);
+            }
+        }
+
+        private async Task ManageBackgroundSync()
+        {
+            BackgrounsSyncCounter++;
+            Console.WriteLine($"In loop. Current count {BackgrounsSyncCounter}");
+            if (BackgrounsSyncCounter == 10)
+            {
+                CheckInternetStatus _internetStatus = new CheckInternetStatus();
+                if (_internetStatus.IsInternetConnected())
+                {
+                    AppInsightSync _appBackSync = new AppInsightSync();
+                    await _appBackSync.StartBackgroundSync(_logger);
+                }
+                BackgrounsSyncCounter = 0;
             }
         }
 
