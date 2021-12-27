@@ -4,6 +4,7 @@ using pi.job.worker.driveAssist.BackgroundSync;
 using pi.job.worker.driveAssist.Common;
 using pi.job.worker.driveAssist.DomainModel;
 using pi.job.worker.driveAssist.SQLite;
+using System.Data.SqlTypes;
 using UnitsNet;
 
 namespace pi.job.worker.driveAssist
@@ -15,6 +16,8 @@ namespace pi.job.worker.driveAssist
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
+            Logger._logger = logger;
+            SQLiteManage.InitDB();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,49 +31,87 @@ namespace pi.job.worker.driveAssist
                 //_logger.LogCritical("Critical - Worker running at: {time}", DateTimeOffset.Now);
                 //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);     
 
-                double _distance = GetDistance();
-                if (_distance != double.MinValue)
+                try
                 {
-                    await PersistData(_distance);
+                    double _distance = GetDistance();
+                    if (_distance != double.MinValue)
+                    {
+                        Logger.LogMessage("Local Persistance Started", ConfigManager.executionEnv);
+                        await PersistData(_distance);
+                    }
+                    if (ConfigManager.EnableBackgroundSync)
+                    {
+                        Logger.LogMessage("Background Sync Started", ConfigManager.executionEnv);
+                        await ManageBackgroundSync();
+                    }
+                    else
+                    {
+                        Logger.LogMessage("Background Sync disabled", ConfigManager.executionEnv);
+                    }
                 }
-                if (ConfigManager.EnableBackgroundSync)
-                    await ManageBackgroundSync();
+                catch (Exception)
+                {
+
+                }
 
                 await Task.Delay(1000, stoppingToken);
             }
         }
 
-        private async Task ManageBackgroundSync()
+        private async Task<bool> ManageBackgroundSync()
         {
-            BackgrounsSyncCounter++;
-            Console.WriteLine($"In loop. Current count {BackgrounsSyncCounter}");
-            if (BackgrounsSyncCounter == 10)
+            Logger.LogMessage("Start Worker --> ManageBackgroundSync", ConfigManager.executionEnv);
+            try
             {
-                CheckInternetStatus _internetStatus = new CheckInternetStatus();
-                if (_internetStatus.IsInternetConnected())
+                BackgrounsSyncCounter++;
+                Console.WriteLine($"In loop. Current count {BackgrounsSyncCounter}");
+                if (BackgrounsSyncCounter == 10)
                 {
-                    AppInsightSync _appBackSync = new AppInsightSync();
-                    await _appBackSync.StartBackgroundSync(_logger);
+                    CheckInternetStatus _internetStatus = new CheckInternetStatus();
+                    if (_internetStatus.IsInternetConnected())
+                    {
+                        Logger.LogMessage("Internet is available sync started", ConfigManager.executionEnv);
+                        AppInsightSync _appBackSync = new AppInsightSync();
+                        bool result = await _appBackSync.StartBackgroundSync(_logger);
+                        if (result) Logger.LogMessage("Sync completed", ConfigManager.executionEnv);
+                    }
+                    BackgrounsSyncCounter = 0;
                 }
-                BackgrounsSyncCounter = 0;
             }
+            catch (Exception ex)
+            {
+                Logger.LogMessage("Error while getting temperature", ConfigManager.executionEnv);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                throw;
+            }
+            Logger.LogMessage("End Worker --> ManageBackgroundSync", ConfigManager.executionEnv);
+            return true;
         }
 
         private double GetDistance()
         {
             double _distance = double.MinValue;
-            using (var sonar = new Hcsr04(4, 17))
+            try
             {
-                if (sonar.TryGetDistance(out Length distance))
+                using (var sonar = new Hcsr04(4, 17))
                 {
-                    Console.WriteLine($"Distance: {Math.Round(distance.Centimeters, 2)} cm");
-                    _distance = Math.Round(distance.Centimeters, 2);
+                    if (sonar.TryGetDistance(out Length distance))
+                    {
+                        Logger.LogMessage($"Distance: {Math.Round(distance.Centimeters, 2)} cm", ConfigManager.executionEnv);
+                        _distance = Math.Round(distance.Centimeters, 2);
 
+                    }
+                    else
+                    {
+                        Logger.LogMessage("Error reading sensor", ConfigManager.executionEnv);
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Error reading sensor");
-                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogMessage("Error in GetDistance", ConfigManager.executionEnv);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                throw;
             }
             return _distance;
         }
@@ -90,28 +131,27 @@ namespace pi.job.worker.driveAssist
                     {
                         if (!double.IsNaN(entry.Temperature.DegreesCelsius))
                         {
-                            _logger.LogInformation
-                                 ($"Temperature from {entry.Sensor.ToString()}: {entry.Temperature.DegreesCelsius} °C");
+                            Logger.LogMessage
+                                ($"Temperature from {entry.Sensor.ToString()}: {entry.Temperature.DegreesCelsius} °C", ConfigManager.executionEnv);
                             _temp = entry.Temperature.DegreesCelsius;
                         }
                         else
                         {
-                            _logger.LogInformation
-                            ("Unable to read Temperature.");
+                            Logger.LogMessage
+                           ("Unable to read Temperature.", ConfigManager.executionEnv);
                         }
                     }
                 }
                 else
                 {
-                    _logger.LogInformation
-                    ($"CPU temperature is not available");
+                    Logger.LogMessage
+                    ($"CPU temperature is not available", ConfigManager.executionEnv);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error while getting temperature");
-
-                _logger.LogError(ex.Message);
+                Logger.LogMessage("Error while getting temperature", ConfigManager.executionEnv);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
             }
             return _temp;
@@ -121,7 +161,7 @@ namespace pi.job.worker.driveAssist
 
         private async Task<bool> PersistData(double? _distance)
         {
-            _logger.LogInformation("Start - Record saved locally");
+            Logger.LogMessage("Start - Record saved locally", ConfigManager.executionEnv);
             try
             {
                 TrackingModel _model = new TrackingModel
@@ -132,16 +172,15 @@ namespace pi.job.worker.driveAssist
                     Unit = "cms",
                     Value = _distance.HasValue ? _distance.Value : 0
                 };
-                var _sqlInstance = SQLiteManage.Instance;
-                await _sqlInstance.InsertRecords(_model, _logger);
+                await SQLiteManage.InsertRecords(_model, _logger);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error sending telemetry");
-                _logger.LogError(ex.Message);
+                Logger.LogMessage("Error sending telemetry", ConfigManager.executionEnv);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
             }
-            _logger.LogInformation(" End - Record saved locally");
+            Logger.LogMessage(" End - Record saved locally", ConfigManager.executionEnv);
             return true;
         }
     }

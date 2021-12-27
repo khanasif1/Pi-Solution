@@ -1,4 +1,5 @@
-﻿using pi.job.worker.driveAssist.DomainModel;
+﻿using pi.job.worker.driveAssist.Common;
+using pi.job.worker.driveAssist.DomainModel;
 using pi.job.worker.driveAssist.SQLite;
 using System;
 using System.Collections.Generic;
@@ -12,16 +13,16 @@ namespace pi.job.worker.driveAssist.BackgroundSync
     {
         internal async Task<bool> StartBackgroundSync(ILogger<Worker> _logger)
         {
-            Console.WriteLine("Sync Started");
+            Logger.LogMessage("Start Sync AppInsightSync --> StartBackgroundSync", ConfigManager.executionEnv);
 
             try
             {
                 List<TrackingModel> _lstSyncData = await GetSyncData(_logger);
-                
+
                 string _correlationId = Guid.NewGuid().ToString();
 
                 foreach (TrackingModel _model in _lstSyncData)
-                {                    
+                {
                     await PostTelemetry(new AppInsightPayload
                     {
                         _operation = _model.Sensor,
@@ -35,12 +36,12 @@ namespace pi.job.worker.driveAssist.BackgroundSync
 
                     }
                 }
-
+                Logger.LogMessage("End Sync AppInsightSync --> StartBackgroundSync", ConfigManager.executionEnv);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error StartBackgroundSync");
-                _logger.LogError(ex.Message);
+                Logger.LogMessage("Error StartBackgroundSync", ConfigManager.executionEnv);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
             }
             return true;
@@ -48,22 +49,23 @@ namespace pi.job.worker.driveAssist.BackgroundSync
         }
         internal async Task<List<TrackingModel>> GetSyncData(ILogger<Worker> _logger)
         {
+            Logger.LogMessage("Start AppInsightSync -->  GetSyncData", ConfigManager.executionEnv);
             try
             {
-                string _sql = "SELECT * FROM DriveTable LIMIT 100 ; ";
-                var _sqlInstance = SQLiteManage.Instance;
-                return await _sqlInstance.GetDB(_sql, _logger);
+                string _sql = "SELECT * FROM DriveTable LIMIT 100 ; ";             
+                return await SQLiteManage.GetDB(_sql, _logger);
             }
             catch (Exception ex)
             {
 
-                _logger.LogError("Error sending telemetry");
-                _logger.LogError(ex.Message);
+                Logger.LogMessage("Error GetSyncData sending telemetry", ConfigManager.executionEnv);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
             }
         }
         internal async Task<bool> PostTelemetry(AppInsightPayload _payload, ILogger<Worker> _logger)
         {
+            Logger.LogMessage("Start AppInsightSync -->  PostTelemetry", ConfigManager.executionEnv);
             try
             {
                 Console.WriteLine("Starting post telemetry");
@@ -84,16 +86,16 @@ namespace pi.job.worker.driveAssist.BackgroundSync
                     }*/);
                 await _insightHelper.AppInsightInit();
 
-                _logger.LogInformation("Telemetry send");
+                Logger.LogMessage("End  AppInsightSync --> PostTelemetry Telemetry send", ConfigManager.executionEnv);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error sending telemetry");
-                _logger.LogError(ex.Message);
+                Logger.LogMessage("Error PostTelemetry sending telemetry", ConfigManager.executionEnv);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
             }
 
-            _logger.LogInformation("End post telemetry");
+            Logger.LogMessage("End post telemetry", ConfigManager.executionEnv);
             return true;
         }
     }

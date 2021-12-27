@@ -1,0 +1,4 @@
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\obj\Debug\net5.0\pi.job.worker.driveAssist.GeneratedMSBuildEditorConfig.editorconfig
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\obj\Debug\net5.0\pi.job.worker.driveAssist.AssemblyInfoInputs.cache
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\obj\Debug\net5.0\pi.job.worker.driveAssist.AssemblyInfo.cs
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\obj\Debug\net5.0\pi.job.worker.driveAssist.csproj.CoreCompileInputs.cache

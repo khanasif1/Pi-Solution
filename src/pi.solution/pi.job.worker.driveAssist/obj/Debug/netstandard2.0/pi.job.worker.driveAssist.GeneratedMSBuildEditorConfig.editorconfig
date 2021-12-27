@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = pi.job.worker.driveAssist
+build_property.ProjectDir = C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\

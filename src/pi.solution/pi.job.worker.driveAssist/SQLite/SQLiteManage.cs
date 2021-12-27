@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using pi.job.worker.driveAssist.Common;
 using pi.job.worker.driveAssist.DomainModel;
 using System;
 using System.Collections.Generic;
@@ -8,59 +9,56 @@ using System.Threading.Tasks;
 
 namespace pi.job.worker.driveAssist.SQLite
 {
-    public sealed class SQLiteManage
-    {
-        private static SQLiteManage? instance = null;
+    public static class SQLiteManage
+    {  
         private static readonly object padlock = new object();
         private static SqliteConnection? connection = null;
-        SQLiteManage() { }
 
-        public static SQLiteManage Instance
+
+        public static SqliteConnection OpenConnection()
         {
-            get
-            {
-                lock (padlock)
-                {
-                    if (instance == null)
-                    {
-                        InitDB();
-                        instance = new SQLiteManage();
-                    }
-                    return instance;
-                }
-            }
-        }
-        private static SqliteConnection OpenConnection()
-        {
+            Logger.LogMessage("Start  SQLiteManage --> OpenConnection", ConfigManager.executionEnv);
             connection = new SqliteConnection("Data Source=driveAssist.db");
             connection.Open();
+            Logger.LogMessage("End SQLiteManage --> OpenConnection", ConfigManager.executionEnv);
             return connection;
 
         }
-        private static bool CloseConnection()
+        public static bool CloseConnection()
         {
+            Logger.LogMessage("Start SQLiteManage --> CloseConnection", ConfigManager.executionEnv);
             if (connection != null && connection.State == System.Data.ConnectionState.Open)
                 connection.Close();
             return true;
         }
-        private static bool InitDB()
+        public static bool InitDB()
         {
+            Logger.LogMessage("Start SQLiteManage --> InitDB", ConfigManager.executionEnv);
             try
             {
-                SQLiteTransect _sqlTransection = new SQLiteTransect();
-                SqliteConnection connection = OpenConnection();
-                _sqlTransection.InitDB(connection);
-                CloseConnection();
+                //if (!File.Exists("driveAssist.db"))
+                {
+                    SQLiteTransect _sqlTransection = new SQLiteTransect();
+                    SqliteConnection connection = OpenConnection();
+                    _sqlTransection.InitDB(connection);
+                    CloseConnection();
+                }
+                //else
+                //{
+                //    Logger.LogMessage("SQLiteManage --> InitDB ==> **Database File Exists**", ConfigManager.executionEnv);
+                //}
             }
             catch (Exception)
             {
                 CloseConnection();
                 throw;
             }
+            Logger.LogMessage("End SQLiteManage --> InitDB", ConfigManager.executionEnv);
             return true;
         }
-        public async Task<bool> InsertRecords(TrackingModel _model, ILogger<Worker> logger)
+        public async static Task<bool> InsertRecords(TrackingModel _model, ILogger<Worker> logger)
         {
+            Logger.LogMessage("Start SQLiteManage --> InsertRecords", ConfigManager.executionEnv);
             try
             {
                 SQLiteTransect _sqlTransection = new SQLiteTransect();
@@ -69,34 +67,37 @@ namespace pi.job.worker.driveAssist.SQLite
             }
             catch (Exception ex)
             {
-                logger.LogError("Error while inserting temperature");
+                Logger.LogMessage("Error while inserting temperature", ConfigManager.executionEnv);
 
-                logger.LogError(ex.Message);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
             }
+            Logger.LogMessage("End SQLiteManage --> InsertRecords", ConfigManager.executionEnv);
             return true;
         }
 
-        public async Task<List<TrackingModel>> GetDB(string? _sql, ILogger<Worker> logger)
+        public async static Task<List<TrackingModel>> GetDB(string? _sql, ILogger<Worker> logger)
         {
+            Logger.LogMessage("Start SQLiteManage --> GetDB", ConfigManager.executionEnv);
             try
             {
                 SQLiteTransect _sqlTransection = new SQLiteTransect();
                 List<TrackingModel> _response= await _sqlTransection.GetDB(OpenConnection(), _sql, logger);
                 CloseConnection();
+                Logger.LogMessage("End SQLiteManage --> GetDB", ConfigManager.executionEnv);
                 return _response;   
             }
             catch (Exception ex)
             {
-                logger.LogError("Error while getting temperature");
+                Logger.LogMessage("Error while getting temperature", ConfigManager.executionEnv);
 
-                logger.LogError(ex.Message);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
             }
         }
-        public async Task<bool> Delete(SqliteConnection connection, List<TrackingModel> _lstTrackPublished, ILogger<Worker> logger)
+        public async static Task<bool> Delete(SqliteConnection connection, List<TrackingModel> _lstTrackPublished, ILogger<Worker> logger)
         {
-
+            Logger.LogMessage("Start SQLiteManage --> Delete", ConfigManager.executionEnv);
             try
             {
                 string _deleteId = String.Join(" ,", _lstTrackPublished.Select(_track => _track.Id));
@@ -107,10 +108,11 @@ namespace pi.job.worker.driveAssist.SQLite
             }
             catch (Exception ex)
             {
-                logger.LogError("Error while Delete");
-                logger.LogError(ex.Message);
+                Logger.LogMessage("Error while Delete", ConfigManager.executionEnv);
+                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
             }
+            Logger.LogMessage("End SQLiteManage --> Delete", ConfigManager.executionEnv);
             return true;
         }
     }
