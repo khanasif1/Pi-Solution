@@ -41,8 +41,8 @@ namespace pi.job.worker.driveAssist.SQLite
             {
                 try
                 {
-                    TrackingModel _trackModel= GetDB(connection, "Select * from [DriveTable];", logger);
-                    if(_trackModel == null)
+                    //List<TrackingModel> _lsttrackModel= await GetDB(connection, "Select * from [DriveTable];", logger);
+                    //if(_lsttrackModel == null )
                     {
                         string Insertsql = " Insert Into DriveTable  " +
                                                 "(Id, " +
@@ -71,27 +71,27 @@ namespace pi.job.worker.driveAssist.SQLite
             return true;
         }
 
-        public TrackingModel GetDB(SqliteConnection connection, string? _sql, ILogger<Worker> logger)
+        public async Task<List<TrackingModel>> GetDB(SqliteConnection connection, string? _sql, ILogger<Worker> logger)
         {
-            TrackingModel _trackingModel = null;
+            List<TrackingModel> _lsttrackingModel = new List<TrackingModel>();
             using (var command = connection.CreateCommand())
             {
                 try
                 {
                     command.CommandText = _sql;
 
-                    using (var reader = command.ExecuteReader())
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
-                            return _trackingModel = new TrackingModel
+                            _lsttrackingModel.Add(new TrackingModel
                             {
                                 Id = reader.GetString(0),
                                 Sensor = reader.GetString(1),
                                 Stamp = reader.GetString(2),
                                 Unit = reader.GetString(3),
                                 Value = reader.GetDouble(4)
-                            };
+                            });
                         }
                     }
                 }
@@ -103,8 +103,29 @@ namespace pi.job.worker.driveAssist.SQLite
                     throw;
                 }
             }
-            return _trackingModel;
+            return _lsttrackingModel;
 
+        }
+
+        public async Task<bool> Delete(SqliteConnection connection, string? _deleteCoreSql, ILogger<Worker> logger)
+        {
+            using (var command = connection.CreateCommand())
+            {
+                try
+                {                  
+                    command.CommandText = _deleteCoreSql;
+                    await command.ExecuteNonQueryAsync();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError("Error while Delete");
+                    logger.LogError(ex.Message);
+                    command.Dispose();
+                    throw;
+                }
+                return true;
+            }
         }
     }
 }

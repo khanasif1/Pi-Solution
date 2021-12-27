@@ -1,4 +1,6 @@
-﻿using System;
+﻿using pi.job.worker.driveAssist.DomainModel;
+using pi.job.worker.driveAssist.SQLite;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,14 +13,54 @@ namespace pi.job.worker.driveAssist.BackgroundSync
         internal async Task<bool> StartBackgroundSync(ILogger<Worker> _logger)
         {
             Console.WriteLine("Sync Started");
+
+            try
+            {
+                List<TrackingModel> _lstSyncData = await GetSyncData(_logger);
+                
+                string _correlationId = Guid.NewGuid().ToString();
+
+                foreach (TrackingModel _model in _lstSyncData)
+                {                    
+                    await PostTelemetry(new AppInsightPayload
+                    {
+                        _operation = _model.Sensor,
+                        _type = AppInsightLanguage.AppInsightTrace,
+                        _payload = $"{ _model.Value.ToString()}{ _model.Unit}",
+                        _correlationId = _correlationId,
+                        _correlationTimeId = Convert.ToDateTime(_model.Stamp)
+                    }, _logger);
+                    if (true)
+                    {
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error StartBackgroundSync");
+                _logger.LogError(ex.Message);
+                throw;
+            }
             return true;
-            //return await Task.Run(() =>
-            //PostTelemetry(new AppInsightPayload(), _logger)
-            //);
+
         }
-        internal async Task<bool> GetSyncData(ILogger<Worker> _logger)
+        internal async Task<List<TrackingModel>> GetSyncData(ILogger<Worker> _logger)
         {
-            return true;
+            try
+            {
+                string _sql = "SELECT * FROM DriveTable LIMIT 100 ; ";
+                var _sqlInstance = SQLiteManage.Instance;
+                return await _sqlInstance.GetDB(_sql, _logger);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError("Error sending telemetry");
+                _logger.LogError(ex.Message);
+                throw;
+            }
         }
         internal async Task<bool> PostTelemetry(AppInsightPayload _payload, ILogger<Worker> _logger)
         {

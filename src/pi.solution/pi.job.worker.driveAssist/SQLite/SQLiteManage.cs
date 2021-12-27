@@ -69,7 +69,7 @@ namespace pi.job.worker.driveAssist.SQLite
             }
             catch (Exception ex)
             {
-                logger.LogError("Error while getting temperature");
+                logger.LogError("Error while inserting temperature");
 
                 logger.LogError(ex.Message);
                 throw;
@@ -77,5 +77,41 @@ namespace pi.job.worker.driveAssist.SQLite
             return true;
         }
 
+        public async Task<List<TrackingModel>> GetDB(string? _sql, ILogger<Worker> logger)
+        {
+            try
+            {
+                SQLiteTransect _sqlTransection = new SQLiteTransect();
+                List<TrackingModel> _response= await _sqlTransection.GetDB(OpenConnection(), _sql, logger);
+                CloseConnection();
+                return _response;   
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error while getting temperature");
+
+                logger.LogError(ex.Message);
+                throw;
+            }
+        }
+        public async Task<bool> Delete(SqliteConnection connection, List<TrackingModel> _lstTrackPublished, ILogger<Worker> logger)
+        {
+
+            try
+            {
+                string _deleteId = String.Join(" ,", _lstTrackPublished.Select(_track => _track.Id));
+                string _deleteCoreSql = $" DELETE FROM DriveTable WHERE ID IN ( {_deleteId} ); ";
+                SQLiteTransect _sqlTransection = new SQLiteTransect();
+                await _sqlTransection.Delete(OpenConnection(), _deleteCoreSql, logger);
+                CloseConnection();                
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error while Delete");
+                logger.LogError(ex.Message);
+                throw;
+            }
+            return true;
+        }
     }
 }

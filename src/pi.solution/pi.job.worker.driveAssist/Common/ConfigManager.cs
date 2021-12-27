@@ -8,7 +8,7 @@ namespace pi.job.worker.driveAssist.Common
 {
     public static class ConfigManager
     {
-        public const bool EnableBackgroundSync = true;
+        public const bool EnableBackgroundSync = false;
 
     }
 }
