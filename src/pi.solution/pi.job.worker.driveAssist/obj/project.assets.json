@@ -2,12 +2,12 @@
   "version": 3,
   "targets": {
     "net6.0": {
-      "Iot.Device.Bindings/1.5.0": {
+      "Iot.Device.Bindings/1.4.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
           "SixLabors.ImageSharp": "1.0.2",
-          "System.Device.Gpio": "1.5.0",
+          "System.Device.Gpio": "1.4.0",
           "System.Drawing.Common": "5.0.2",
           "System.IO.Ports": "5.0.1",
           "System.Management": "5.0.0",
@@ -781,7 +781,7 @@
           "lib/netstandard1.0/System.Collections.Immutable.dll": {}
         }
       },
-      "System.Device.Gpio/1.5.0": {
+      "System.Device.Gpio/1.4.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.Win32.Registry": "5.0.0",
@@ -1340,23 +1340,21 @@
     }
   },
   "libraries": {
-    "Iot.Device.Bindings/1.5.0": {
-      "sha512": "CNCOpPSatE0X7XfZ7mnGv1SKbZY878ny5lUCVihGobp7bQMIrsZRszH1Otw20dDFQ5WL3ZAkuqn9d3f/hzp3dA==",
+    "Iot.Device.Bindings/1.4.0": {
+      "sha512": "B6RkiKl+/n9NoX2GKva3ReG9v5nD1ne8e7arZiwoKxIEd7V7XneqYDBpfyIJGdbccf7vZFco7IPQi/463/JGoA==",
       "type": "package",
-      "path": "iot.device.bindings/1.5.0",
+      "path": "iot.device.bindings/1.4.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "THIRD-PARTY-NOTICES.TXT",
-        "iot.device.bindings.1.5.0.nupkg.sha512",
+        "iot.device.bindings.1.4.0.nupkg.sha512",
         "iot.device.bindings.nuspec",
         "lib/net5.0/Iot.Device.Bindings.dll",
         "lib/net5.0/Iot.Device.Bindings.xml",
         "lib/netcoreapp2.1/Iot.Device.Bindings.dll",
-        "lib/netcoreapp2.1/Iot.Device.Bindings.xml",
-        "lib/netstandard2.0/Iot.Device.Bindings.dll",
-        "lib/netstandard2.0/Iot.Device.Bindings.xml"
+        "lib/netcoreapp2.1/Iot.Device.Bindings.xml"
       ]
     },
     "Microsoft.ApplicationInsights/2.20.0": {
@@ -2453,10 +2451,10 @@
         "system.collections.immutable.nuspec"
       ]
     },
-    "System.Device.Gpio/1.5.0": {
-      "sha512": "OOxVX5FBTSrV8SZguyAVV+zVx0cmhfPL+6bvgVsKJXky8rUhpQKQuP8+tpatcHuQT4fCqAE2/vdN9Hy3cC68vQ==",
+    "System.Device.Gpio/1.4.0": {
+      "sha512": "KLZjf8hxezI7H9nlPg72ErSkeTVTt6kSKoEBqtZ7yibdodIxDm480KNxSGmlIs1vR03JRYOapDxcCrPaDLR0kg==",
       "type": "package",
-      "path": "system.device.gpio/1.5.0",
+      "path": "system.device.gpio/1.4.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2469,7 +2467,7 @@
         "lib/net5.0/System.Device.Gpio.xml",
         "lib/netstandard2.0/System.Device.Gpio.dll",
         "lib/netstandard2.0/System.Device.Gpio.xml",
-        "system.device.gpio.1.5.0.nupkg.sha512",
+        "system.device.gpio.1.4.0.nupkg.sha512",
         "system.device.gpio.nuspec"
       ]
     },
@@ -4379,14 +4377,14 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "Iot.Device.Bindings >= 1.5.0",
+      "Iot.Device.Bindings >= 1.4.0",
       "Microsoft.ApplicationInsights >= 2.20.0",
       "Microsoft.ApplicationInsights.DependencyCollector >= 2.20.0",
       "Microsoft.Data.Sqlite >= 6.0.1",
       "Microsoft.Data.Sqlite.Core >= 6.0.1",
       "Microsoft.Extensions.Hosting >= 6.0.0",
       "Microsoft.Extensions.Hosting.Systemd >= 6.0.0",
-      "System.Device.Gpio >= 1.5.0"
+      "System.Device.Gpio >= 1.4.0"
     ]
   },
   "packageFolders": {
@@ -4430,7 +4428,7 @@
         "dependencies": {
           "Iot.Device.Bindings": {
             "target": "Package",
-            "version": "[1.5.0, )"
+            "version": "[1.4.0, )"
           },
           "Microsoft.ApplicationInsights": {
             "target": "Package",
@@ -4458,7 +4456,7 @@
           },
           "System.Device.Gpio": {
             "target": "Package",
-            "version": "[1.5.0, )"
+            "version": "[1.4.0, )"
           }
         },
         "imports": [

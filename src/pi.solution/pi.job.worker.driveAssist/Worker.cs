@@ -7,6 +7,8 @@ using pi.job.worker.driveAssist.SQLite;
 using System.Data.SqlTypes;
 using UnitsNet;
 
+//https://docs.microsoft.com/en-us/dotnet/api/system.transactions.transactionscope?view=net-6.0
+
 namespace pi.job.worker.driveAssist
 {
     public class Worker : BackgroundService
@@ -64,8 +66,8 @@ namespace pi.job.worker.driveAssist
             try
             {
                 BackgrounsSyncCounter++;
-                Console.WriteLine($"In loop. Current count {BackgrounsSyncCounter}");
-                if (BackgrounsSyncCounter == 10)
+                Logger.LogMessage($"In loop. Current count {BackgrounsSyncCounter}", ConfigManager.executionEnv);
+                if (BackgrounsSyncCounter == 2)
                 {
                     CheckInternetStatus _internetStatus = new CheckInternetStatus();
                     if (_internetStatus.IsInternetConnected())
@@ -82,6 +84,7 @@ namespace pi.job.worker.driveAssist
             {
                 Logger.LogMessage("Error while getting temperature", ConfigManager.executionEnv);
                 Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                BackgrounsSyncCounter = 0;
                 throw;
             }
             Logger.LogMessage("End Worker --> ManageBackgroundSync", ConfigManager.executionEnv);
@@ -90,6 +93,7 @@ namespace pi.job.worker.driveAssist
 
         private double GetDistance()
         {
+            //double _distance = new Random().Next(10, 500); //double.MinValue;
             double _distance = double.MinValue;
             try
             {
@@ -99,7 +103,6 @@ namespace pi.job.worker.driveAssist
                     {
                         Logger.LogMessage($"Distance: {Math.Round(distance.Centimeters, 2)} cm", ConfigManager.executionEnv);
                         _distance = Math.Round(distance.Centimeters, 2);
-
                     }
                     else
                     {

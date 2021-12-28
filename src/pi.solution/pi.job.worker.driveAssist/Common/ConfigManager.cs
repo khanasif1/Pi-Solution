@@ -9,7 +9,7 @@ namespace pi.job.worker.driveAssist.Common
 {
     public static class ConfigManager
     {
-        public const bool EnableBackgroundSync = false;
+        public const bool EnableBackgroundSync = true;
         public const ExecutionEnv executionEnv = ExecutionEnv.dev;
     }
 }

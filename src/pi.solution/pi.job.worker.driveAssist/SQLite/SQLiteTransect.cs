@@ -66,7 +66,7 @@ namespace pi.job.worker.driveAssist.SQLite
                         command.ExecuteNonQuery();
                     }
                     catch (Exception)
-                    {
+                    {                      
                         command.Dispose();
                         throw;
                     }
@@ -101,10 +101,9 @@ namespace pi.job.worker.driveAssist.SQLite
                         await command.ExecuteNonQueryAsync();
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    logger.LogError("Error while InsertDB");
-                    logger.LogError(ex.Message);
+                    logger.LogError("Error while InsertDB");                    
                     command.Dispose();
                     throw;
                 }
@@ -130,18 +129,17 @@ namespace pi.job.worker.driveAssist.SQLite
                             _lsttrackingModel.Add(new TrackingModel
                             {
                                 Id = reader.GetString(0),
-                                Sensor = reader.GetString(1),
-                                Stamp = reader.GetString(2),
-                                Unit = reader.GetString(3),
-                                Value = reader.GetDouble(4)
+                                Sensor = reader.GetString(2),
+                                Stamp = reader.GetString(1),
+                                Unit = reader.GetString(4),
+                                Value = reader.GetDouble(3)
                             });
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("Error while GetDB");
-                    logger.LogError(ex.Message);
+                    logger.LogError("Error while GetDB");                    
                     command.Dispose();
                     throw;
                 }

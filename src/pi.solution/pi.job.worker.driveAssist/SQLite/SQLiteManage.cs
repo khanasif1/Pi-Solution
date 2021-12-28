@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace pi.job.worker.driveAssist.SQLite
 {
     public static class SQLiteManage
-    {  
+    {
         private static readonly object padlock = new object();
         private static SqliteConnection? connection = null;
 
@@ -82,10 +82,10 @@ namespace pi.job.worker.driveAssist.SQLite
             try
             {
                 SQLiteTransect _sqlTransection = new SQLiteTransect();
-                List<TrackingModel> _response= await _sqlTransection.GetDB(OpenConnection(), _sql, logger);
+                List<TrackingModel> _response = await _sqlTransection.GetDB(OpenConnection(), _sql, logger);
                 CloseConnection();
                 Logger.LogMessage("End SQLiteManage --> GetDB", ConfigManager.executionEnv);
-                return _response;   
+                return _response;
             }
             catch (Exception ex)
             {
@@ -95,16 +95,16 @@ namespace pi.job.worker.driveAssist.SQLite
                 throw;
             }
         }
-        public async static Task<bool> Delete(SqliteConnection connection, List<TrackingModel> _lstTrackPublished, ILogger<Worker> logger)
+        public async static Task<bool> Delete(List<TrackingModel> _lstTrackPublished, ILogger<Worker> logger)
         {
-            Logger.LogMessage("Start SQLiteManage --> Delete", ConfigManager.executionEnv);
+            Logger.LogMessage($"Start SQLiteManage --> Deleteing record count {_lstTrackPublished.Count}", ConfigManager.executionEnv);
             try
             {
-                string _deleteId = String.Join(" ,", _lstTrackPublished.Select(_track => _track.Id));
+                string _deleteId = String.Join(" ,", _lstTrackPublished.Select(_track => "'" + _track.Id + "'"));
                 string _deleteCoreSql = $" DELETE FROM DriveTable WHERE ID IN ( {_deleteId} ); ";
                 SQLiteTransect _sqlTransection = new SQLiteTransect();
                 await _sqlTransection.Delete(OpenConnection(), _deleteCoreSql, logger);
-                CloseConnection();                
+                CloseConnection();
             }
             catch (Exception ex)
             {

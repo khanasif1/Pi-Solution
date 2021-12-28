@@ -3,6 +3,7 @@ using pi.job.worker.driveAssist.DomainModel;
 using pi.job.worker.driveAssist.SQLite;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace pi.job.worker.driveAssist.BackgroundSync
                 List<TrackingModel> _lstSyncData = await GetSyncData(_logger);
 
                 string _correlationId = Guid.NewGuid().ToString();
-
+                Logger.LogMessage($"Start AppInsightSync --> PostTelemetry for {_lstSyncData.Count} records", ConfigManager.executionEnv);
                 foreach (TrackingModel _model in _lstSyncData)
                 {
                     await PostTelemetry(new AppInsightPayload
@@ -29,14 +30,16 @@ namespace pi.job.worker.driveAssist.BackgroundSync
                         _type = AppInsightLanguage.AppInsightTrace,
                         _payload = $"{ _model.Value.ToString()}{ _model.Unit}",
                         _correlationId = _correlationId,
-                        _correlationTimeId = Convert.ToDateTime(_model.Stamp)
-                    }, _logger);
-                    if (true)
-                    {
-
-                    }
+                        _correlationTimeId = DateTime.Parse(_model.Stamp)
+                    }, _logger);                   
                 }
-                Logger.LogMessage("End Sync AppInsightSync --> StartBackgroundSync", ConfigManager.executionEnv);
+                Logger.LogMessage($"End AppInsightSync --> PostTelemetry for {_lstSyncData.Count} records", ConfigManager.executionEnv);
+                /*
+                 * Clean records posted
+                 */
+                Logger.LogMessage($"Start AppInsightSync --> Clean records posted ", ConfigManager.executionEnv);
+                bool status= await SQLiteManage.Delete(_lstSyncData,_logger);
+                Logger.LogMessage($"End AppInsightSync --> Clean records posted ", ConfigManager.executionEnv);                
             }
             catch (Exception ex)
             {
@@ -44,6 +47,7 @@ namespace pi.job.worker.driveAssist.BackgroundSync
                 Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
             }
+            Logger.LogMessage("End Sync AppInsightSync --> StartBackgroundSync", ConfigManager.executionEnv);
             return true;
 
         }
@@ -52,8 +56,10 @@ namespace pi.job.worker.driveAssist.BackgroundSync
             Logger.LogMessage("Start AppInsightSync -->  GetSyncData", ConfigManager.executionEnv);
             try
             {
-                string _sql = "SELECT * FROM DriveTable LIMIT 100 ; ";             
-                return await SQLiteManage.GetDB(_sql, _logger);
+                string _sql = "SELECT * FROM DriveTable LIMIT 100 ; ";
+                List<TrackingModel> _model = await SQLiteManage.GetDB(_sql, _logger);
+                Logger.LogMessage($"Got {_model.Count.ToString()} records to sync", ConfigManager.executionEnv);
+                return _model;
             }
             catch (Exception ex)
             {
@@ -65,37 +71,19 @@ namespace pi.job.worker.driveAssist.BackgroundSync
         }
         internal async Task<bool> PostTelemetry(AppInsightPayload _payload, ILogger<Worker> _logger)
         {
-            Logger.LogMessage("Start AppInsightSync -->  PostTelemetry", ConfigManager.executionEnv);
+
             try
-            {
-                Console.WriteLine("Starting post telemetry");
-                //_correlationTimeId = DateTime.UtcNow;
-                //string _correlationId = Guid.NewGuid().ToString();
-                //string _traceMessage = $"Message from Pi temperature is {_CPUTemp.ToString()}";
+            {               
 
-                AppInsightHelper _insightHelper = new AppInsightHelper(_payload
-
-                    /*new AppInsightPayload
-                    {
-                        _operation = "Pi Telemetry",
-                        _type = AppInsightLanguage.AppInsightTrace,
-                        _payload = _traceMessage,
-                        _correlationId = _correlationId,
-                        _correlationTimeId = _correlationTimeId
-
-                    }*/);
+                AppInsightHelper _insightHelper = new AppInsightHelper(_payload);
                 await _insightHelper.AppInsightInit();
-
-                Logger.LogMessage("End  AppInsightSync --> PostTelemetry Telemetry send", ConfigManager.executionEnv);
             }
             catch (Exception ex)
             {
                 Logger.LogMessage("Error PostTelemetry sending telemetry", ConfigManager.executionEnv);
                 Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
-            }
-
-            Logger.LogMessage("End post telemetry", ConfigManager.executionEnv);
+            }            
             return true;
         }
     }

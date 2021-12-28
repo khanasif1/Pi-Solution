@@ -8,24 +8,24 @@
     ".NETCoreApp,Version=v6.0": {
       "pi.job.worker.driveAssist/1.0.0": {
         "dependencies": {
-          "Iot.Device.Bindings": "1.5.0",
+          "Iot.Device.Bindings": "1.4.0",
           "Microsoft.ApplicationInsights": "2.20.0",
           "Microsoft.ApplicationInsights.DependencyCollector": "2.20.0",
           "Microsoft.Data.Sqlite": "6.0.1",
           "Microsoft.Data.Sqlite.Core": "6.0.1",
           "Microsoft.Extensions.Hosting": "6.0.0",
           "Microsoft.Extensions.Hosting.Systemd": "6.0.0",
-          "System.Device.Gpio": "1.5.0"
+          "System.Device.Gpio": "1.4.0"
         },
         "runtime": {
           "pi.job.worker.driveAssist.dll": {}
         }
       },
-      "Iot.Device.Bindings/1.5.0": {
+      "Iot.Device.Bindings/1.4.0": {
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
           "SixLabors.ImageSharp": "1.0.2",
-          "System.Device.Gpio": "1.5.0",
+          "System.Device.Gpio": "1.4.0",
           "System.Drawing.Common": "5.0.2",
           "System.IO.Ports": "5.0.1",
           "System.Management": "5.0.0",
@@ -33,8 +33,8 @@
         },
         "runtime": {
           "lib/net5.0/Iot.Device.Bindings.dll": {
-            "assemblyVersion": "1.5.0.0",
-            "fileVersion": "1.500.21.36606"
+            "assemblyVersion": "1.4.0.0",
+            "fileVersion": "1.400.21.16602"
           }
         }
       },
@@ -669,7 +669,7 @@
           "System.Threading": "4.3.0"
         }
       },
-      "System.Device.Gpio/1.5.0": {
+      "System.Device.Gpio/1.4.0": {
         "dependencies": {
           "Microsoft.Win32.Registry": "5.0.0",
           "System.Memory": "4.5.4",
@@ -677,8 +677,8 @@
         },
         "runtime": {
           "lib/net5.0/System.Device.Gpio.dll": {
-            "assemblyVersion": "1.5.0.0",
-            "fileVersion": "1.500.21.36606"
+            "assemblyVersion": "1.4.0.0",
+            "fileVersion": "1.400.21.16602"
           }
         }
       },
@@ -1022,12 +1022,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Iot.Device.Bindings/1.5.0": {
+    "Iot.Device.Bindings/1.4.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-CNCOpPSatE0X7XfZ7mnGv1SKbZY878ny5lUCVihGobp7bQMIrsZRszH1Otw20dDFQ5WL3ZAkuqn9d3f/hzp3dA==",
-      "path": "iot.device.bindings/1.5.0",
-      "hashPath": "iot.device.bindings.1.5.0.nupkg.sha512"
+      "sha512": "sha512-B6RkiKl+/n9NoX2GKva3ReG9v5nD1ne8e7arZiwoKxIEd7V7XneqYDBpfyIJGdbccf7vZFco7IPQi/463/JGoA==",
+      "path": "iot.device.bindings/1.4.0",
+      "hashPath": "iot.device.bindings.1.4.0.nupkg.sha512"
     },
     "Microsoft.ApplicationInsights/2.20.0": {
       "type": "package",
@@ -1379,12 +1379,12 @@
       "path": "system.collections.immutable/1.3.0",
       "hashPath": "system.collections.immutable.1.3.0.nupkg.sha512"
     },
-    "System.Device.Gpio/1.5.0": {
+    "System.Device.Gpio/1.4.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-OOxVX5FBTSrV8SZguyAVV+zVx0cmhfPL+6bvgVsKJXky8rUhpQKQuP8+tpatcHuQT4fCqAE2/vdN9Hy3cC68vQ==",
-      "path": "system.device.gpio/1.5.0",
-      "hashPath": "system.device.gpio.1.5.0.nupkg.sha512"
+      "sha512": "sha512-KLZjf8hxezI7H9nlPg72ErSkeTVTt6kSKoEBqtZ7yibdodIxDm480KNxSGmlIs1vR03JRYOapDxcCrPaDLR0kg==",
+      "path": "system.device.gpio/1.4.0",
+      "hashPath": "system.device.gpio.1.4.0.nupkg.sha512"
     },
     "System.Diagnostics.Debug/4.3.0": {
       "type": "package",
