@@ -67,7 +67,7 @@ namespace pi.job.worker.driveAssist
             {
                 BackgrounsSyncCounter++;
                 Logger.LogMessage($"In loop. Current count {BackgrounsSyncCounter}", ConfigManager.executionEnv);
-                if (BackgrounsSyncCounter == 2)
+                if (BackgrounsSyncCounter == 60)
                 {
                     CheckInternetStatus _internetStatus = new CheckInternetStatus();
                     if (_internetStatus.IsInternetConnected())
@@ -82,7 +82,7 @@ namespace pi.job.worker.driveAssist
             }
             catch (Exception ex)
             {
-                Logger.LogMessage("Error while getting temperature", ConfigManager.executionEnv);
+                Logger.LogMessage("Error in ManageBackgroundSync", ConfigManager.executionEnv);
                 Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 BackgrounsSyncCounter = 0;
                 throw;
@@ -93,7 +93,9 @@ namespace pi.job.worker.driveAssist
 
         private double GetDistance()
         {
-            //double _distance = new Random().Next(10, 500); //double.MinValue;
+            //double _distance = new Random().Next(10, 500);
+            //Logger.LogMessage($"Distance: {Math.Round(_distance,2)} cm", ConfigManager.executionEnv);
+
             double _distance = double.MinValue;
             try
             {

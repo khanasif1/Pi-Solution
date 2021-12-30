@@ -1,5 +1,6 @@
 ﻿using pi.job.worker.driveAssist.Common;
 using pi.job.worker.driveAssist.DomainModel;
+using pi.job.worker.driveAssist.Insights;
 using pi.job.worker.driveAssist.SQLite;
 using System;
 using System.Collections.Generic;
@@ -22,24 +23,27 @@ namespace pi.job.worker.driveAssist.BackgroundSync
 
                 string _correlationId = Guid.NewGuid().ToString();
                 Logger.LogMessage($"Start AppInsightSync --> PostTelemetry for {_lstSyncData.Count} records", ConfigManager.executionEnv);
-                foreach (TrackingModel _model in _lstSyncData)
-                {
-                    await PostTelemetry(new AppInsightPayload
-                    {
-                        _operation = _model.Sensor,
-                        _type = AppInsightLanguage.AppInsightTrace,
-                        _payload = $"{ _model.Value.ToString()}{ _model.Unit}",
-                        _correlationId = _correlationId,
-                        _correlationTimeId = DateTime.Parse(_model.Stamp)
-                    }, _logger);                   
-                }
+                //foreach (TrackingModel _model in _lstSyncData)
+                //{
+                await PostTelemetry(_lstSyncData, _logger);
+                //await PostTelemetry(new AppInsightPayload
+                //{
+                //    _operation = _model.Sensor,
+                //    _type = AppInsightLanguage.AppInsightTrace,
+                //    _payload = $"{ _model.Value.ToString()}{ _model.Unit}",
+                //    _correlationId = _correlationId,
+                //    //_correlationTimeId = DateTime.Parse(_model.Stamp)
+                //}, _logger);
+                Logger.LogMessage($"Posting record created {_lstSyncData.Last().Stamp}", ConfigManager.executionEnv);
+                await Task.Delay(500);
+                //}
                 Logger.LogMessage($"End AppInsightSync --> PostTelemetry for {_lstSyncData.Count} records", ConfigManager.executionEnv);
                 /*
                  * Clean records posted
                  */
                 Logger.LogMessage($"Start AppInsightSync --> Clean records posted ", ConfigManager.executionEnv);
-                bool status= await SQLiteManage.Delete(_lstSyncData,_logger);
-                Logger.LogMessage($"End AppInsightSync --> Clean records posted ", ConfigManager.executionEnv);                
+                bool status = await SQLiteManage.Delete(_lstSyncData, _logger);
+                Logger.LogMessage($"End AppInsightSync --> Clean records posted ", ConfigManager.executionEnv);
             }
             catch (Exception ex)
             {
@@ -69,21 +73,22 @@ namespace pi.job.worker.driveAssist.BackgroundSync
                 throw;
             }
         }
-        internal async Task<bool> PostTelemetry(AppInsightPayload _payload, ILogger<Worker> _logger)
+        internal async Task<bool> PostTelemetry(List<TrackingModel> _payload, ILogger<Worker> _logger)
         {
-
             try
-            {               
-
-                AppInsightHelper _insightHelper = new AppInsightHelper(_payload);
-                await _insightHelper.AppInsightInit();
+            {
+                Logger.LogMessage("In AppInsightSync --> PostTelemetry", ConfigManager.executionEnv);
+                //AppInsightHelper _insightHelper = new AppInsightHelper(_payload);
+                //await _insightHelper.AppInsightInit();
+                //await AppInsightHelper.AppInsightInit(_payload);
+                AppInsightAPIHelper.Post(_payload);
             }
             catch (Exception ex)
             {
                 Logger.LogMessage("Error PostTelemetry sending telemetry", ConfigManager.executionEnv);
                 Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
                 throw;
-            }            
+            }
             return true;
         }
     }
