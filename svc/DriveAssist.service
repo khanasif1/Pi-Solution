@@ -1,0 +1,16 @@
+[Unit]
+Description=DriveAssist
+After=network.target
+
+[Service]
+Type=forking
+WorkingDirectory=/home/pi/pi_solution_app
+ExecStart=/home/pi/.dotnet/dotnet /home/pi/pi_solution_app/pi.job.worker.driveAssist.dll
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+RemainAfterExit=yes
+User=pi
+
+[Install]
+WantedBy=multi-user.target

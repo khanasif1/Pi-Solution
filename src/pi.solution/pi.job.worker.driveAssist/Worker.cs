@@ -6,8 +6,11 @@ using pi.job.worker.driveAssist.DomainModel;
 using pi.job.worker.driveAssist.SQLite;
 using System.Data.SqlTypes;
 using UnitsNet;
+using Iot.Device.Max7219;
+using System.Device.Spi;
 
 //https://docs.microsoft.com/en-us/dotnet/api/system.transactions.transactionscope?view=net-6.0
+//https://github.com/dotnet/iot/blob/main/src/devices/README.md
 
 namespace pi.job.worker.driveAssist
 {
@@ -25,6 +28,81 @@ namespace pi.job.worker.driveAssist
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             Console.WriteLine($"Start Main method");
+
+            //while (!stoppingToken.IsCancellationRequested)
+            //{
+            //    #region MAX7219
+            //    Console.WriteLine($"Start Max app");
+            //    string message = "6";
+            //    SpiConnectionSettings connectionSettings = new(0, 0)
+            //    {
+            //        ClockFrequency = Max7219.SpiClockFrequency,
+            //        Mode = Max7219.SpiMode
+            //    };
+            //    SpiDevice spi = SpiDevice.Create(connectionSettings);
+            //    Max7219 devices = new(spi, cascadedDevices: 16);
+
+            //    //devices.Init();
+            //    //var smiley = new byte[]
+            //    //{
+            //    //    0b00111100,
+            //    //    0b01000010,
+            //    //    0b10100101,
+            //    //    0b10000001,
+            //    //    0b10100101,
+            //    //    0b10011001,
+            //    //    0b01000010,
+            //    //    0b00111100
+            //    //};
+
+
+            //    //for (var i = 0; i < devices.CascadedDevices; i++)
+            //    //{
+            //    //    for (var digit = 0; digit < 8; digit++)
+            //    //    {
+            //    //        devices[i, digit] = smiley[digit];
+            //    //    }
+            //    //}
+
+            //    // flush the smiley to the devices using a different rotation each iteration.
+            //    //foreach (RotationType rotation in Enum.GetValues(typeof(RotationType)))
+            //    //{
+            //    //    Console.WriteLine($"Send Smiley using rotation {devices.Rotation}.");
+            //    //    devices.Rotation = rotation;
+            //    //    devices.Flush();
+            //    //    Thread.Sleep(1000);
+            //    //}
+
+
+            //    devices.Init();
+            //    devices.Rotation = RotationType.Right;
+            //    MatrixGraphics graphics = new(devices, Fonts.Default);
+            //    foreach (var font in new[]
+            //    {
+            //        Fonts.CP437, Fonts.LCD, Fonts.Sinclair, Fonts.Tiny, Fonts.CyrillicUkrainian
+            //    })
+            //    {                    
+            //        graphics.Font = font;
+            //        graphics.ShowMessage(message, alwaysScroll: true);
+            //    }
+
+            //    RotationType? ReadRotation(char c) => c switch
+            //    {
+            //        'l' => RotationType.Left,
+            //        'r' => RotationType.Right,
+            //        'n' => RotationType.None,
+            //        'h' => RotationType.Half,
+            //        _ => null,
+            //    };
+            //    await Task.Delay(1000, stoppingToken);
+            //}
+            //#endregion
+
+
+
+
+
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 //_logger.LogInformation("Information - Worker running at: {time}", DateTimeOffset.Now);

@@ -1,19 +1,21 @@
 
 # Copy to Pi Home
-scp -r  C:\_dev\_github\Pi-Solution\svc\HelloWorld.service  pi@192.168.1.109: /home/pi/HelloWorld.service
+scp -r  C:\_dev\_github\Pi-Solution\svc\DriveAssist.service  pi@192.168.1.109:/home/pi/DriveAssist.service
 
 # Install Service
-sudo cp HelloWorld.service /etc/systemd/system/HelloWorld.service
+sudo cp DriveAssist.service /etc/systemd/system/DriveAssist.service
 
 systemctl daemon-reload
 
-sudo systemctl enable HelloWorld.service
+sudo systemctl enable DriveAssist.service
 
-sudo systemctl start HelloWorld.service
+sudo systemctl start DriveAssist.service
 
-sudo systemctl status HelloWorld.service
+sudo systemctl status DriveAssist.service
 
 # UnInstall Service
+
+systemctl disable DriveAssist.service
 
 systemctl stop HelloWorld.service
 systemctl disable HelloWorld.service
@@ -25,7 +27,20 @@ systemctl daemon-reload
 systemctl reset-failed
 
 
+#List All Services
+ systemctl --type=service
+
 #Copy binary
 scp -r  C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\*  pi@192.168.1.109:/home/pi/pi_solution_app/
+scp -r  pi@192.168.1.109:/home/pi/pi_solution_app/driveAssist.db  C:\_dev\_github\Pi-Solution\src\dbDump
 
 rm -rfv /home/pi/pi_solution_app/*
+
+#Check WiFi Speed 
+watch -n 1 cat /proc/net/wireless
+
+wavemon ****Use This******
+
+
+
+scp -r  C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\*  pi@192.168.1.110:/home/pi/max7219app/
