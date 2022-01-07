@@ -22,8 +22,6 @@ jobs:
       run: dotnet restore ./src/pi.solution
     - name: Build
       run: dotnet build --no-restore ./src/pi.solution
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
     - name: Publish application
       run: dotnet publish "./src/pi.solution/" -c Release -o myApp
     - name: Upload Artifacts
