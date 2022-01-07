@@ -13,7 +13,7 @@ namespace pi.job.worker.driveAssist.Insights
     internal class AppInsightAPIHelper
     {
 
-        static string json = @"[{""DemoField1"":""Asif"",""DemoField2"":""24""},{""DemoField3"":""Khan"",""DemoField4"":""Sydney""}]";
+        //static string json = @"[{""DemoField1"":""Asif"",""DemoField2"":""24""},{""DemoField3"":""Khan"",""DemoField4"":""Sydney""}]";
 
         // Update customerId to your Log Analytics workspace ID
         static string customerId = ConfigManager.customerId;
@@ -32,7 +32,7 @@ namespace pi.job.worker.driveAssist.Insights
             try
             {
                 Logger.LogMessage("In AppInsightAPIHelper --> Post", ConfigManager.executionEnv);
-                json = BuildJson(_lstpayload);
+                string json = BuildJson(_lstpayload);
                 // Create a hash for the API signature
                 var datestring = DateTime.UtcNow.ToString("r");
                 var jsonBytes = Encoding.UTF8.GetBytes(json);

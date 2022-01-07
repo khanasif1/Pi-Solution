@@ -23,17 +23,9 @@ namespace pi.job.worker.driveAssist.BackgroundSync
 
                 string _correlationId = Guid.NewGuid().ToString();
                 Logger.LogMessage($"Start AppInsightSync --> PostTelemetry for {_lstSyncData.Count} records", ConfigManager.executionEnv);
-                //foreach (TrackingModel _model in _lstSyncData)
-                //{
+
                 await PostTelemetry(_lstSyncData, _logger);
-                //await PostTelemetry(new AppInsightPayload
-                //{
-                //    _operation = _model.Sensor,
-                //    _type = AppInsightLanguage.AppInsightTrace,
-                //    _payload = $"{ _model.Value.ToString()}{ _model.Unit}",
-                //    _correlationId = _correlationId,
-                //    //_correlationTimeId = DateTime.Parse(_model.Stamp)
-                //}, _logger);
+
                 Logger.LogMessage($"Posting record created {_lstSyncData.Last().Stamp}", ConfigManager.executionEnv);
                 await Task.Delay(500);
                 //}
@@ -60,7 +52,7 @@ namespace pi.job.worker.driveAssist.BackgroundSync
             Logger.LogMessage("Start AppInsightSync -->  GetSyncData", ConfigManager.executionEnv);
             try
             {
-                string _sql = "SELECT * FROM DriveTable LIMIT 100 ; ";
+                string _sql = $"SELECT * FROM DriveTable LIMIT {ConfigManager.BackgroundSyncRecordCount} ; ";
                 List<TrackingModel> _model = await SQLiteManage.GetDB(_sql, _logger);
                 Logger.LogMessage($"Got {_model.Count.ToString()} records to sync", ConfigManager.executionEnv);
                 return _model;
