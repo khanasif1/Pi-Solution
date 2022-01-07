@@ -1,0 +1,32 @@
+name: PiAssist
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore ./src/pi.solution
+    - name: Build
+      run: dotnet build --no-restore ./src/pi.solution
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: Publish application
+      run: dotnet publish "./src/pi.solution/" -c Release -o myApp
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+       name: piassist-artifact
+       path: "./binary"      
