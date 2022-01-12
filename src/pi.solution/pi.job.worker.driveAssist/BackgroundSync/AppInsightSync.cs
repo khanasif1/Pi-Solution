@@ -52,7 +52,7 @@ namespace pi.job.worker.driveAssist.BackgroundSync
             Logger.LogMessage("Start AppInsightSync -->  GetSyncData", ConfigManager.executionEnv);
             try
             {
-                string _sql = $"SELECT * FROM DriveTable LIMIT {ConfigManager.BackgroundSyncRecordCount} ; ";
+                string _sql = $"SELECT * FROM DriveTable LIMIT {ConfigManager.backgroundSyncRecordCount} ; ";
                 List<TrackingModel> _model = await SQLiteManage.GetDB(_sql, _logger);
                 Logger.LogMessage($"Got {_model.Count.ToString()} records to sync", ConfigManager.executionEnv);
                 return _model;

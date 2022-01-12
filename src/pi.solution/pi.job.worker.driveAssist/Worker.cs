@@ -6,8 +6,8 @@ using pi.job.worker.driveAssist.DomainModel;
 using pi.job.worker.driveAssist.SQLite;
 using System.Data.SqlTypes;
 using UnitsNet;
-using Iot.Device.Max7219;
-using System.Device.Spi;
+//using Iot.Device.Max7219;
+//using System.Device.Spi;
 
 //https://docs.microsoft.com/en-us/dotnet/api/system.transactions.transactionscope?view=net-6.0
 //https://github.com/dotnet/iot/blob/main/src/devices/README.md
@@ -22,7 +22,13 @@ namespace pi.job.worker.driveAssist
         {
             _logger = logger;
             Logger._logger = logger;
+            
             SQLiteManage.InitDB();
+
+            CheckInternetStatus _internetStatus = new CheckInternetStatus();
+            if (_internetStatus.IsInternetConnected()) ConfigSync.GetConfig();
+            else ConfigSync.GetOfflineConfig();
+
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -49,7 +55,7 @@ namespace pi.job.worker.driveAssist
                     {
                         Logger.LogMessage("Its Safe !! Object too far ", ConfigManager.executionEnv);
                     }
-                    if (ConfigManager.EnableBackgroundSync)
+                    if (ConfigManager.enableBackgroundSync)
                     {
                         Logger.LogMessage("Background Sync Started", ConfigManager.executionEnv);
                         await ManageBackgroundSync();

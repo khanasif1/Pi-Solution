@@ -35,18 +35,13 @@ namespace pi.job.worker.driveAssist.SQLite
         {
             Logger.LogMessage("Start SQLiteManage --> InitDB", ConfigManager.executionEnv);
             try
-            {
-                //if (!File.Exists("driveAssist.db"))
+            {                
                 {
                     SQLiteTransect _sqlTransection = new SQLiteTransect();
                     SqliteConnection connection = OpenConnection();
                     _sqlTransection.InitDB(connection);
                     CloseConnection();
-                }
-                //else
-                //{
-                //    Logger.LogMessage("SQLiteManage --> InitDB ==> **Database File Exists**", ConfigManager.executionEnv);
-                //}
+                }             
             }
             catch (Exception)
             {
@@ -75,7 +70,7 @@ namespace pi.job.worker.driveAssist.SQLite
             Logger.LogMessage("End SQLiteManage --> InsertRecords", ConfigManager.executionEnv);
             return true;
         }
-
+        
         public async static Task<List<TrackingModel>> GetDB(string? _sql, ILogger<Worker> logger)
         {
             Logger.LogMessage("Start SQLiteManage --> GetDB", ConfigManager.executionEnv);
@@ -114,6 +109,6 @@ namespace pi.job.worker.driveAssist.SQLite
             }
             Logger.LogMessage("End SQLiteManage --> Delete", ConfigManager.executionEnv);
             return true;
-        }
+        }    
     }
 }

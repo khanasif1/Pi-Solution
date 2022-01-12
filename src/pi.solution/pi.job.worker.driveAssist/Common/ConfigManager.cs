@@ -9,11 +9,11 @@ namespace pi.job.worker.driveAssist.Common
 {
     public static class ConfigManager
     {
-        public const bool EnableBackgroundSync = true;
-        public const int BackgroundSyncRecordCount = 1000;
-        public const ExecutionEnv executionEnv = ExecutionEnv.dev;
-        public const string LogAnalyticsTable= "AutoAssist";
-        public const string customerId = "76c487b3-73ba-4a20-b18b-8de46ebcb135";          
-        public const string sharedKey = "EFxb2JDn+J3jWjwGB3bHqX1sLhEUi3smzjsaY5K3bpOFMg3LD40BpRpZUdcKONL3IwqWAriKv1kjTUb/nDbEGA==";
+        public static bool enableBackgroundSync;
+        public static int backgroundSyncRecordCount = int.MinValue;
+        public static ExecutionEnv executionEnv;
+        public static string logAnalyticsTable = String.Empty;
+        public static string customerId = String.Empty;
+        public static string sharedKey = String.Empty;
     }
 }

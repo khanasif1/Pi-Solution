@@ -22,7 +22,7 @@ namespace pi.job.worker.driveAssist.Insights
         static string sharedKey = ConfigManager.sharedKey;
 
         // LogName is name of the event type that is being submitted to Azure Monitor
-        static string LogName = ConfigManager.LogAnalyticsTable;
+        static string LogName = ConfigManager.logAnalyticsTable;
 
         // You can use an optional field to specify the timestamp from the data. If the time field is not specified, Azure Monitor assumes the time is the message ingestion time
         static string TimeStampField = "";

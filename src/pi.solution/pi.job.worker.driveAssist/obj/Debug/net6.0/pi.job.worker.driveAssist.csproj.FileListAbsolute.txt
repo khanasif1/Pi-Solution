@@ -85,4 +85,8 @@ C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\obj\Debug\
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\obj\Debug\net6.0\ref\pi.job.worker.driveAssist.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\obj\Debug\net6.0\pi.job.worker.driveAssist.pdb
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\obj\Debug\net6.0\pi.job.worker.driveAssist.genruntimeconfig.cache
-C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\obj\Debug\net6.0\pi.job.worker.driveAssist.csproj.AssemblyReference.cache
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Debug\net6.0\Azure.Core.dll
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Debug\net6.0\Azure.Data.AppConfiguration.dll
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Debug\net6.0\Azure.Security.KeyVault.Secrets.dll
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Debug\net6.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Debug\net6.0\Microsoft.Extensions.Configuration.AzureAppConfiguration.dll
