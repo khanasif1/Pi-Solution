@@ -16,11 +16,37 @@ namespace pi.job.worker.driveAssist
                 Console.WriteLine(message);
             else
                 _logger.LogInformation(message);
-        }       
+        }
+        internal static void LogMessage(LogType _type, string? message, ExecutionEnv _env)
+        {
+            if (_env == ExecutionEnv.dev) Console.WriteLine(message);
+            else
+                {
+                    switch (_type)
+                    {
+                        case LogType.info: _logger.LogInformation(message);
+                           break;
+
+                        case LogType.error: _logger.LogError(message);
+                            break;
+
+                        case LogType.warning: _logger.LogWarning(message);
+                            break;
+
+                    }
+
+                }
+            }
+        }
+        public enum ExecutionEnv
+        {
+            dev,
+            prod
+        }
+        public enum LogType
+        {
+            info,
+            error,
+            warning
+        }
     }
-    public enum ExecutionEnv
-    {
-        dev,
-        prod
-    }
-}

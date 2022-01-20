@@ -17,23 +17,23 @@ namespace pi.job.worker.driveAssist.SQLite
 
         public static SqliteConnection OpenConnection()
         {
-            Logger.LogMessage("Start  SQLiteManage --> OpenConnection", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"Start  SQLiteManage --> OpenConnection", ConfigManager.executionEnv);
             connection = new SqliteConnection("Data Source=driveAssist.db");
             connection.Open();
-            Logger.LogMessage("End SQLiteManage --> OpenConnection", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"End SQLiteManage --> OpenConnection", ConfigManager.executionEnv);
             return connection;
 
         }
         public static bool CloseConnection()
         {
-            Logger.LogMessage("Start SQLiteManage --> CloseConnection", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"Start SQLiteManage --> CloseConnection", ConfigManager.executionEnv);
             if (connection != null && connection.State == System.Data.ConnectionState.Open)
                 connection.Close();
             return true;
         }
         public static bool InitDB()
         {
-            Logger.LogMessage("Start SQLiteManage --> InitDB", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"Start SQLiteManage --> InitDB", ConfigManager.executionEnv);
             try
             {                
                 {
@@ -48,12 +48,12 @@ namespace pi.job.worker.driveAssist.SQLite
                 CloseConnection();
                 throw;
             }
-            Logger.LogMessage("End SQLiteManage --> InitDB", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"End SQLiteManage --> InitDB", ConfigManager.executionEnv);
             return true;
         }
         public async static Task<bool> InsertRecords(TrackingModel _model, ILogger<Worker> logger)
         {
-            Logger.LogMessage("Start SQLiteManage --> InsertRecords", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"Start SQLiteManage --> InsertRecords", ConfigManager.executionEnv);
             try
             {
                 SQLiteTransect _sqlTransection = new SQLiteTransect();
@@ -62,37 +62,37 @@ namespace pi.job.worker.driveAssist.SQLite
             }
             catch (Exception ex)
             {
-                Logger.LogMessage("Error while inserting temperature", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error,"Error while inserting temperature", ConfigManager.executionEnv);
 
-                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error,ex.Message, ConfigManager.executionEnv);
                 throw;
             }
-            Logger.LogMessage("End SQLiteManage --> InsertRecords", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"End SQLiteManage --> InsertRecords", ConfigManager.executionEnv);
             return true;
         }
         
         public async static Task<List<TrackingModel>> GetDB(string? _sql, ILogger<Worker> logger)
         {
-            Logger.LogMessage("Start SQLiteManage --> GetDB", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"Start SQLiteManage --> GetDB", ConfigManager.executionEnv);
             try
             {
                 SQLiteTransect _sqlTransection = new SQLiteTransect();
                 List<TrackingModel> _response = await _sqlTransection.GetDB(OpenConnection(), _sql, logger);
                 CloseConnection();
-                Logger.LogMessage("End SQLiteManage --> GetDB", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.info,"End SQLiteManage --> GetDB", ConfigManager.executionEnv);
                 return _response;
             }
             catch (Exception ex)
             {
-                Logger.LogMessage("Error while getting temperature", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error,"Error while getting temperature", ConfigManager.executionEnv);
 
-                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error,ex.Message, ConfigManager.executionEnv);
                 throw;
             }
         }
         public async static Task<bool> Delete(List<TrackingModel> _lstTrackPublished, ILogger<Worker> logger)
         {
-            Logger.LogMessage($"Start SQLiteManage --> Deleteing record count {_lstTrackPublished.Count}", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,$"Start SQLiteManage --> Deleteing record count {_lstTrackPublished.Count}", ConfigManager.executionEnv);
             try
             {
                 string _deleteId = String.Join(" ,", _lstTrackPublished.Select(_track => "'" + _track.Id + "'"));
@@ -103,11 +103,11 @@ namespace pi.job.worker.driveAssist.SQLite
             }
             catch (Exception ex)
             {
-                Logger.LogMessage("Error while Delete", ConfigManager.executionEnv);
-                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error,"Error while Delete", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error,ex.Message, ConfigManager.executionEnv);
                 throw;
             }
-            Logger.LogMessage("End SQLiteManage --> Delete", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"End SQLiteManage --> Delete", ConfigManager.executionEnv);
             return true;
         }    
     }

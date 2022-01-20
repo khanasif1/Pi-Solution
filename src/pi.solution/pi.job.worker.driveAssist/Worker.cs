@@ -22,7 +22,7 @@ namespace pi.job.worker.driveAssist
         {
             _logger = logger;
             Logger._logger = logger;
-            
+
             SQLiteManage.InitDB();
 
             CheckInternetStatus _internetStatus = new CheckInternetStatus();
@@ -35,34 +35,47 @@ namespace pi.job.worker.driveAssist
         {
             Console.WriteLine($"Start Main method");
 
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                //_logger.LogInformation("Information - Worker running at: {time}", DateTimeOffset.Now);
-                //_logger.LogWarning("Warning - Worker running at: {time}", DateTimeOffset.Now);
-                //_logger.LogError("Error - Worker running at: {time}", DateTimeOffset.Now);
-                //_logger.LogCritical("Critical - Worker running at: {time}", DateTimeOffset.Now);
-                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);     
 
                 try
                 {
                     double _distance = GetDistance();
+                    if (_distance > 140 && _distance <= 220)
+                    {
+                        BuzzerAlert.RaiseAlert(BuzzerAlert.AlertLevel.minor);
+                    }
+                    else if (_distance > 60 && _distance <= 140)
+                    {
+                        BuzzerAlert.RaiseAlert(BuzzerAlert.AlertLevel.intermedidate);
+                    }
+                    else if (_distance > 20 && _distance <= 60)
+                    {
+                        BuzzerAlert.RaiseAlert(BuzzerAlert.AlertLevel.major);
+                    }
+                    else if (_distance <= 20)
+                    {
+                        BuzzerAlert.RaiseAlert(BuzzerAlert.AlertLevel.ultra);
+                    }
+
                     if (_distance != double.MinValue)
                     {
-                        Logger.LogMessage("Local Persistance Started", ConfigManager.executionEnv);
+                        Logger.LogMessage(LogType.info, "Local Persistance Started", ConfigManager.executionEnv);
                         await PersistData(_distance);
                     }
                     else
                     {
-                        Logger.LogMessage("Its Safe !! Object too far ", ConfigManager.executionEnv);
+                        Logger.LogMessage(LogType.info, "Its Safe !! Object too far ", ConfigManager.executionEnv);
                     }
                     if (ConfigManager.enableBackgroundSync)
                     {
-                        Logger.LogMessage("Background Sync Started", ConfigManager.executionEnv);
+                        Logger.LogMessage(LogType.info, "Background Sync Started", ConfigManager.executionEnv);
                         await ManageBackgroundSync();
                     }
                     else
                     {
-                        Logger.LogMessage("Background Sync disabled", ConfigManager.executionEnv);
+                        Logger.LogMessage(LogType.info, "Background Sync disabled", ConfigManager.executionEnv);
                     }
                 }
                 catch (Exception)
@@ -80,28 +93,28 @@ namespace pi.job.worker.driveAssist
             try
             {
                 BackgrounsSyncCounter++;
-                Logger.LogMessage($"In loop. Current count {BackgrounsSyncCounter}", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.info, $"In loop. Current count {BackgrounsSyncCounter}", ConfigManager.executionEnv);
                 if (BackgrounsSyncCounter == 60)
                 {
                     CheckInternetStatus _internetStatus = new CheckInternetStatus();
                     if (_internetStatus.IsInternetConnected())
                     {
-                        Logger.LogMessage("Internet is available sync started", ConfigManager.executionEnv);
+                        Logger.LogMessage(LogType.info, "Internet is available sync started", ConfigManager.executionEnv);
                         AppInsightSync _appBackSync = new AppInsightSync();
                         bool result = await _appBackSync.StartBackgroundSync(_logger);
-                        if (result) Logger.LogMessage("Sync completed", ConfigManager.executionEnv);
+                        if (result) Logger.LogMessage(LogType.info, "Sync completed", ConfigManager.executionEnv);
                     }
                     BackgrounsSyncCounter = 0;
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogMessage("Error in ManageBackgroundSync", ConfigManager.executionEnv);
-                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error, "Error in ManageBackgroundSync", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error, ex.Message, ConfigManager.executionEnv);
                 BackgrounsSyncCounter = 0;
                 throw;
             }
-            Logger.LogMessage("End Worker --> ManageBackgroundSync", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info, "End Worker --> ManageBackgroundSync", ConfigManager.executionEnv);
             return true;
         }
 
@@ -117,19 +130,19 @@ namespace pi.job.worker.driveAssist
                 {
                     if (sonar.TryGetDistance(out Length distance))
                     {
-                        Logger.LogMessage($"Distance: {Math.Round(distance.Centimeters, 2)} cm", ConfigManager.executionEnv);
+                        Logger.LogMessage(LogType.info, $"Distance: {Math.Round(distance.Centimeters, 2)} cm", ConfigManager.executionEnv);
                         _distance = Math.Round(distance.Centimeters, 2);
                     }
                     else
                     {
-                        Logger.LogMessage("Error reading sensor", ConfigManager.executionEnv);
+                        Logger.LogMessage(LogType.info, "Error reading sensor", ConfigManager.executionEnv);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogMessage("Error in GetDistance", ConfigManager.executionEnv);
-                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error, "Error in GetDistance", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error, ex.Message, ConfigManager.executionEnv);
                 throw;
             }
             return _distance;
@@ -151,26 +164,26 @@ namespace pi.job.worker.driveAssist
                         if (!double.IsNaN(entry.Temperature.DegreesCelsius))
                         {
                             Logger.LogMessage
-                                ($"Temperature from {entry.Sensor.ToString()}: {entry.Temperature.DegreesCelsius} °C", ConfigManager.executionEnv);
+                                (LogType.info, $"Temperature from {entry.Sensor.ToString()}: {entry.Temperature.DegreesCelsius} °C", ConfigManager.executionEnv);
                             _temp = entry.Temperature.DegreesCelsius;
                         }
                         else
                         {
                             Logger.LogMessage
-                           ("Unable to read Temperature.", ConfigManager.executionEnv);
+                           (LogType.info, "Unable to read Temperature.", ConfigManager.executionEnv);
                         }
                     }
                 }
                 else
                 {
                     Logger.LogMessage
-                    ($"CPU temperature is not available", ConfigManager.executionEnv);
+                    (LogType.info, $"CPU temperature is not available", ConfigManager.executionEnv);
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogMessage("Error while getting temperature", ConfigManager.executionEnv);
-                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error, "Error while getting temperature", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error, ex.Message, ConfigManager.executionEnv);
                 throw;
             }
             return _temp;
@@ -180,7 +193,7 @@ namespace pi.job.worker.driveAssist
 
         private async Task<bool> PersistData(double? _distance)
         {
-            Logger.LogMessage("Start - Record saved locally", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info, "Start - Record saved locally", ConfigManager.executionEnv);
             try
             {
                 TrackingModel _model = new TrackingModel
@@ -195,12 +208,13 @@ namespace pi.job.worker.driveAssist
             }
             catch (Exception ex)
             {
-                Logger.LogMessage("Error sending telemetry", ConfigManager.executionEnv);
-                Logger.LogMessage(ex.Message, ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error, "Error sending telemetry", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.error, ex.Message, ConfigManager.executionEnv);
                 throw;
             }
-            Logger.LogMessage(" End - Record saved locally", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info, " End - Record saved locally", ConfigManager.executionEnv);
             return true;
         }
     }
+
 }

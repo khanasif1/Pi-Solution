@@ -5,12 +5,17 @@ C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Releas
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\pi.job.worker.driveAssist.deps.json
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\pi.job.worker.driveAssist.runtimeconfig.json
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\pi.job.worker.driveAssist.pdb
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Azure.Core.dll
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Azure.Data.AppConfiguration.dll
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Azure.Security.KeyVault.Secrets.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Iot.Device.Bindings.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.ApplicationInsights.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.AI.DependencyCollector.dll
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.Bcl.AsyncInterfaces.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.Data.Sqlite.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.Extensions.Configuration.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.Extensions.Configuration.AzureAppConfiguration.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.Extensions.Configuration.Binder.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.Extensions.Configuration.CommandLine.dll
 C:\_dev\_github\Pi-Solution\src\pi.solution\pi.job.worker.driveAssist\bin\Release\net6.0\publish\Microsoft.Extensions.Configuration.EnvironmentVariables.dll

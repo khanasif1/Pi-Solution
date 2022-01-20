@@ -13,10 +13,10 @@ namespace pi.job.worker.driveAssist.SQLite
     {
         public bool InitDB(SqliteConnection connection)
         {
-            Logger.LogMessage("Start SQLiteTransect --> InitDB", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"Start SQLiteTransect --> InitDB", ConfigManager.executionEnv);
             bool IsTableExist = false;
 
-            Logger.LogMessage("SQLiteTransect --> InitDB Check if Table Exist", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"SQLiteTransect --> InitDB Check if Table Exist", ConfigManager.executionEnv);
 
             string _sqltablecheck = "SELECT name FROM sqlite_master WHERE type='table' AND name='DriveTable'; ";
             using (var commandCheck = connection.CreateCommand())
@@ -34,12 +34,12 @@ namespace pi.job.worker.driveAssist.SQLite
                     }
                     if (!string.IsNullOrEmpty(tableName))
                     {
-                        Logger.LogMessage("SQLiteTransect --> InitDB Table Exists", ConfigManager.executionEnv);
+                        Logger.LogMessage(LogType.info,"SQLiteTransect --> InitDB Table Exists", ConfigManager.executionEnv);
                         IsTableExist = true;
                     }
                     else
                     {
-                        Logger.LogMessage("SQLiteTransect --> InitDB Table Missing Create One", ConfigManager.executionEnv);
+                        Logger.LogMessage(LogType.info,"SQLiteTransect --> InitDB Table Missing Create One", ConfigManager.executionEnv);
                     }
                 }
                 catch (Exception ex)
@@ -53,7 +53,7 @@ namespace pi.job.worker.driveAssist.SQLite
             {
                 using (var command = connection.CreateCommand())
                 {
-                    Logger.LogMessage("SQLiteTransect --> InitDB Start Creating Table", ConfigManager.executionEnv);
+                    Logger.LogMessage(LogType.info,"SQLiteTransect --> InitDB Start Creating Table", ConfigManager.executionEnv);
                     try
                     {
                         string Createsql = "CREATE TABLE DriveTable (" +
@@ -72,12 +72,12 @@ namespace pi.job.worker.driveAssist.SQLite
                     }
                 }
             }
-            Logger.LogMessage("End SQLiteTransect --> InitDB", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"End SQLiteTransect --> InitDB", ConfigManager.executionEnv);
             return true;
         }
         public async Task<bool> InsertDB(SqliteConnection connection, TrackingModel _model, ILogger<Worker> logger)
         {
-            Logger.LogMessage("Start SQLiteTransect --> InsertDB", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"Start SQLiteTransect --> InsertDB", ConfigManager.executionEnv);
             using (var command = connection.CreateCommand())
             {
                 try
@@ -101,20 +101,20 @@ namespace pi.job.worker.driveAssist.SQLite
                         await command.ExecuteNonQueryAsync();
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    logger.LogError("Error while InsertDB");                    
+                    Logger.LogMessage(LogType.info, $"Error while InsertDB: {ex.Message}", ConfigManager.executionEnv);                    
                     command.Dispose();
                     throw;
                 }
             }
-            Logger.LogMessage("End SQLiteTransect --> InsertDB", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"End SQLiteTransect --> InsertDB", ConfigManager.executionEnv);
             return true;
         }
 
         public async Task<List<TrackingModel>> GetDB(SqliteConnection connection, string? _sql, ILogger<Worker> logger)
         {
-            Logger.LogMessage("Start SQLiteTransect --> GetDB", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"Start SQLiteTransect --> GetDB", ConfigManager.executionEnv);
             List<TrackingModel> _lsttrackingModel = new List<TrackingModel>();
             using (var command = connection.CreateCommand())
             {
@@ -139,19 +139,20 @@ namespace pi.job.worker.driveAssist.SQLite
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("Error while GetDB");                    
+                    Logger.LogMessage(LogType.info, $"Error while GetDB : {ex.Message}", ConfigManager.executionEnv);
+                           
                     command.Dispose();
                     throw;
                 }
             }
-            Logger.LogMessage("End SQLiteTransect --> GetDB", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"End SQLiteTransect --> GetDB", ConfigManager.executionEnv);
             return _lsttrackingModel;
 
         }
 
         public async Task<bool> Delete(SqliteConnection connection, string? _deleteCoreSql, ILogger<Worker> logger)
         {
-            Logger.LogMessage("Start SQLiteTransect --> Delete", ConfigManager.executionEnv);
+            Logger.LogMessage(LogType.info,"Start SQLiteTransect --> Delete", ConfigManager.executionEnv);
             using (var command = connection.CreateCommand())
             {
                 try
@@ -161,12 +162,12 @@ namespace pi.job.worker.driveAssist.SQLite
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError("Error while Delete");
-                    logger.LogError(ex.Message);
+                    Logger.LogMessage(LogType.info, $"Error while Delete: {ex.Message}", ConfigManager.executionEnv);                    
+                    
                     command.Dispose();
                     throw;
                 }
-                Logger.LogMessage("End SQLiteTransect --> Delete", ConfigManager.executionEnv);
+                Logger.LogMessage(LogType.info,"End SQLiteTransect --> Delete", ConfigManager.executionEnv);
                 return true;
             }
         }
