@@ -35,7 +35,7 @@ namespace pi.job.worker.driveAssist
         {
             Console.WriteLine($"Start Main method");
 
-
+            BuzzerAlert _alert = new BuzzerAlert();
             while (!stoppingToken.IsCancellationRequested)
             {
 
@@ -44,19 +44,24 @@ namespace pi.job.worker.driveAssist
                     double _distance = GetDistance();
                     if (_distance > 140 && _distance <= 220)
                     {
-                        BuzzerAlert.RaiseAlert(BuzzerAlert.AlertLevel.minor);
+                        Logger.LogMessage(LogType.info, "Between 140 ==> 220 cm, MINOR", ConfigManager.executionEnv);
+                        await _alert.RaiseAlert(BuzzerAlert.AlertLevel.minor);
                     }
                     else if (_distance > 60 && _distance <= 140)
                     {
-                        BuzzerAlert.RaiseAlert(BuzzerAlert.AlertLevel.intermedidate);
+                        Logger.LogMessage(LogType.info, "Between 60 ==> 140 cm, INTERMEDIATE", ConfigManager.executionEnv);
+
+                        await _alert.RaiseAlert(BuzzerAlert.AlertLevel.intermedidate);
                     }
                     else if (_distance > 20 && _distance <= 60)
                     {
-                        BuzzerAlert.RaiseAlert(BuzzerAlert.AlertLevel.major);
+                        Logger.LogMessage(LogType.info, "Between 140 ==> 220 cm, MAJOR", ConfigManager.executionEnv);
+                        await _alert.RaiseAlert(BuzzerAlert.AlertLevel.major);
                     }
                     else if (_distance <= 20)
                     {
-                        BuzzerAlert.RaiseAlert(BuzzerAlert.AlertLevel.ultra);
+                        Logger.LogMessage(LogType.info, "Less than 20, ULTRA", ConfigManager.executionEnv);
+                        await _alert.RaiseAlert(BuzzerAlert.AlertLevel.ultra);
                     }
 
                     if (_distance != double.MinValue)
