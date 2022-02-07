@@ -13,7 +13,7 @@ namespace pi.job.worker.driveAssist.Common
         {
             var builder = new ConfigurationBuilder();
 
-            builder.AddAzureAppConfiguration("Endpoint=https://piconfig.azconfig.io;Id=btxc-lg-s0:mABNXOpscuv36p8rIWu0;Secret=m3TKxcYZsc5MV1PSneUFp0cqEgqYPZDy9oUkCHcvI3I=");
+            builder.AddAzureAppConfiguration("Endpoint=https://piconfigure.azconfig.io;Id=5bBV-lg-s0:6cXg/tLM/niXOsV5juba;Secret=8f7zENyNZwt8P0/fOK3HCvrYOBku2y8BtGou+bTn2vo=");
 
             var config = builder.Build();
 
@@ -43,8 +43,8 @@ namespace pi.job.worker.driveAssist.Common
             ConfigManager.backgroundSyncRecordCount = 1000;
             ConfigManager.executionEnv = ExecutionEnv.dev;
             ConfigManager.logAnalyticsTable = "AutoAssist";
-            ConfigManager.customerId = "76c487b3-73ba-4a20-b18b-8de46ebcb135";
-            ConfigManager.sharedKey = "EFxb2JDn+J3jWjwGB3bHqX1sLhEUi3smzjsaY5K3bpOFMg3LD40BpRpZUdcKONL3IwqWAriKv1kjTUb/nDbEGA==";
+            ConfigManager.customerId = "30a28886-3c3b-47eb-8b9a-9a80d1d2d22e";
+            ConfigManager.sharedKey = "UpreDRkNjpMWbaC0ib55tyDFmC8M/w8gnxU8NtcIc9bK9oAa+7JwCZzvXzceRWKdpsGka4W5E1SlmtpcIBj3gw==";
 
         }
     }
