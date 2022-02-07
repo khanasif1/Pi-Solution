@@ -18,28 +18,28 @@ namespace pi.job.worker.driveAssist.Common
                 {
                     Logger.LogMessage(LogType.info, "Minor Alert", ConfigManager.executionEnv);
                     _buzzer.StartPlaying(100);
-                    Thread.Sleep(3000);
+                    Thread.Sleep(1000);
                     _buzzer.StopPlaying();
                 }
                 else if(_level == AlertLevel.intermedidate)
                 {
                     Logger.LogMessage(LogType.info, "Intermediate Alert", ConfigManager.executionEnv);
-                    _buzzer.StartPlaying(300);
-                    Thread.Sleep(3000);
+                    _buzzer.StartPlaying(200);
+                    Thread.Sleep(1000);
                     _buzzer.StopPlaying();
                 }
                 else if (_level == AlertLevel.major)
                 {
                     Logger.LogMessage(LogType.info, "Major Alert", ConfigManager.executionEnv);
-                    _buzzer.StartPlaying(600);
-                    Thread.Sleep(3000);
+                    _buzzer.StartPlaying(300);
+                    Thread.Sleep(1000);
                     _buzzer.StopPlaying();
                 }
                 else if (_level == AlertLevel.ultra)
                 {
                     Logger.LogMessage(LogType.info, "Ultra Alert", ConfigManager.executionEnv);
-                    _buzzer.StartPlaying(900);
-                    Thread.Sleep(3000);
+                    _buzzer.StartPlaying(400);
+                    Thread.Sleep(1000);
                     _buzzer.StopPlaying();
                 }     
             }           
