@@ -42,18 +42,19 @@ namespace pi.job.worker.driveAssist
                 try
                 {
                     double _distance = GetDistance();
-                    if (_distance > 100 && _distance <= 140)
-                    {
-                        Logger.LogMessage(LogType.info, "Between 100 ==> 140 cm, MINOR", ConfigManager.executionEnv);
-                        await _alert.RaiseAlert(BuzzerAlert.AlertLevel.minor);
-                    }
-                    else if (_distance > 60 && _distance <= 100)
-                    {
-                        Logger.LogMessage(LogType.info, "Between 60 ==> 100 cm, INTERMEDIATE", ConfigManager.executionEnv);
+                    //if (_distance > 100 && _distance <= 140)
+                    //{
+                    //    Logger.LogMessage(LogType.info, "Between 100 ==> 140 cm, MINOR", ConfigManager.executionEnv);
+                    //    await _alert.RaiseAlert(BuzzerAlert.AlertLevel.minor);
+                    //}
+                    //else if (_distance > 60 && _distance <= 100)
+                    //{
+                    //    Logger.LogMessage(LogType.info, "Between 60 ==> 100 cm, INTERMEDIATE", ConfigManager.executionEnv);
 
-                        await _alert.RaiseAlert(BuzzerAlert.AlertLevel.intermedidate);
-                    }
-                    else if (_distance > 20 && _distance <= 60)
+                    //    await _alert.RaiseAlert(BuzzerAlert.AlertLevel.intermedidate);
+                    //}
+                    //else 
+                    if (_distance > 20 && _distance <= 60)
                     {
                         Logger.LogMessage(LogType.info, "Between 20 ==> 60 cm, MAJOR", ConfigManager.executionEnv);
                         await _alert.RaiseAlert(BuzzerAlert.AlertLevel.major);
